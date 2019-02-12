@@ -1,0 +1,49 @@
+"""
+File contains definitions for the different types of Stops that can be encountered during the trip
+"""
+
+class Stop(object):
+    def __init__(self, expendedEnergy, tripTime):
+        """ Base representation of a stop along a vehicles route. 
+
+            Keyword arguments:
+
+            expendedEnergy -- The energy required to travel from the previous stop to the current stop. 
+            tripTime -- The duration of the trip from the previous stop to the current stop. 
+        """
+
+        self.ExpendedEnergy = expendedEnergy
+        self.TripTime = tripTime
+
+class Start(Stop):
+    def __init__(self):
+        """ Represents the starting point of the route. 
+        There are no properties for a starting point as there is no previous stop. 
+        """
+        super(Start, self).__init__(0, 0)
+
+class Charger(Stop):
+    def __init__(self, expendedEnergy, tripTime):
+        """ Represents a charging station along a route. 
+
+            Keyword arguments:
+
+            expendedEnergy -- The energy required to travel from the previous stop to the current stop. 
+            tripTime -- The duration of the trip from the previous stop to the current stop. 
+        """
+        super(Charger, self).__init__(expendedEnergy, tripTime)
+
+class Destination(Stop):
+    def __init__(self, expendedEnergy, tripTime, hasCharger):
+        """ Represents the Destination of the route. 
+
+            Keyword arguments:
+
+            expendedEnergy -- The energy required to travel from the previous stop to the current stop. 
+            tripTime -- The duration of the trip from the previous stop to the current stop.
+            hasCharger -- Indicates whether or not the destination has a charging station or not.  
+        """
+        self.HasCharger = hasCharger
+        super(Destination, self).__init__(expendedEnergy, tripTime)
+
+
