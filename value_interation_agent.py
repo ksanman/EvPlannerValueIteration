@@ -1,5 +1,5 @@
 import numpy as np
-from matplotlib.pyplot import plot
+import matplotlib.pyplot as plt
 
 from ev_trip_scheduler_env import EvTripScheduleEnvironment
 
@@ -76,25 +76,26 @@ class ValueIterationAgent:
 
     def EvaluatePolicy(self, numberOfTestRuns, randomState):
         average_reward = 0
-        self.TestRunInfo = []
+        self.TestRunInfo = {}
 
         for testRun in range(numberOfTestRuns):
-            print 'Test Run #: ', testRun
-            runInfo = {testRun: {}}
+            print 'Test Run #: ', testRun + 1
+            runInfo = {testRun: {"Steps": {}}}
 
             state = self.Environment.Reset(randomState)
+            runInfo[testRun]["Steps"].update({0: {"State": state, "Action": None, "Reward": 0, "Is Terminated": False, 'Step Total Reward': 0}})
             total_reward = 0
-            step_index = 0
+            step_index = 1
             self.ChargingPoints = {}
 
             while True:
                 # Get the optimal action. 
                 actionToTake = int(self.Policy[state])
-                runInfo[testRun].update({step_index: {"Start State": state, "Action": actionToTake}})
+                
                 # Act.  
                 state, reward, done, _ = self.Environment.Step(actionToTake)
 
-                runInfo[testRun][step_index].update({"End State": state, "Reward": reward, "Is Terminated": done})
+                runInfo[testRun]["Steps"].update({step_index: {"State": state, "Action": actionToTake, "Reward": reward, "Is Terminated": done}})
                 
 
                 # if the action is charging, add the waypoint to a list of coordinates to display once the test
@@ -108,7 +109,7 @@ class ValueIterationAgent:
                 
                 total_reward += reward
 
-                runInfo[testRun][step_index].update({"Step Total Reward": total_reward})
+                runInfo[testRun]["Steps"][step_index].update({"Step Total Reward": total_reward})
 
                 step_index += 1
                 
@@ -116,12 +117,12 @@ class ValueIterationAgent:
                 if done:
                     break
             #Print the trip stats. 
-            #runInfo[testRun].update({"Average Reward": average_reward})
+            runInfo[testRun].update({"Average Reward": average_reward})
             average_reward += total_reward
             self.PrintEvaluation(state, total_reward)
             print 'Average reward: ', average_reward/(testRun + 1), '\n\n'
         
-            self.TestRunInfo.append(runInfo)
+            self.TestRunInfo.update(runInfo)
 
         print 'Total average reward: ', average_reward/numberOfTestRuns
 
@@ -136,17 +137,31 @@ class ValueIterationAgent:
             print(s)
 
     def DisplayEvaluationGraphs(self):
-        print self.TestRunInfo
+        #print self.TestRunInfo
 
-        batteryPairs = []
+        batteryInfo = []
 
         for run in self.TestRunInfo:
-            for step in run[0]:
-                startState = run[0][step]["Start State"]
-                endState = run[0][step]["End State"]
-                startStop, startTime, startBattery = self.Environment.Decode(startState)
-                endStop, endTime, endBattery = self.Environment.Decode(endState)
-                batteryPairs.append([startBattery, endBattery])
+            for step in self.TestRunInfo[run]["Steps"]:
+                state = self.TestRunInfo[run]["Steps"][step]["State"]
+                stop, time, battery = self.Environment.Decode(state)
+                batteryInfo.append([battery, time])
 
+        self.PlotBatteryInfo(batteryInfo)
+
+    def PlotBatteryInfo(self, batteryInfo):
+        batteryInfo = np.array(batteryInfo)
 
         #plot Here
+        _, batteryAxes = plt.subplots()
+        time = batteryInfo[:, 1]
+        battery = batteryInfo[:, 0]
+        batteryAxes.plot(time, battery)
+        plt.ylim(ymin=0)
+        plt.xlim(xmin=0)
+        plt.yticks(np.arange(0, max(battery) + 1, 1))
+        plt.xticks(np.arange(0, max(time) + 1, 1))
+        labels = batteryAxes.get_xticklabels()
+        plt.setp(labels, horizontalalignment='right')
+        batteryAxes.set(xlabel='Time', ylabel='Battery Charge', title='Battery Charge vs Time')
+        plt.show()
