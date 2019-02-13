@@ -18,38 +18,60 @@ def GetTestCases():
 
     testCases = []
 
-    # Test Case 1: [[1 Start Location, 1 Charger, 1 Destination with Charger], 3 time units, NissanLeaf with capacity of 3]
-    testCases.append([
-        "Test Case with final charging location.",
-        [
-            [0,0],
-            [-3,1],
-            [-5,1, True]
-        ],
-        10,
-        NissanLeafBattery(10)
-    ])
+    # Test Case 1: [[1 Start Location, 1 Charger, 1 Destination with Charger], 10 time units, NissanLeaf with capacity of 10]
+    # testCases.append([
+    #     "Test Case with final charging location.",
+    #     [
+    #         [0,0],
+    #         [-3,1],
+    #         [-5,1, True]
+    #     ],
+    #     10,
+    #     NissanLeafBattery(10)
+    # ])
 
 
-    # Test Case 2: [[1 Start Location, 1 Charger, 1 Destination without Charger] 3 time units, NissanLeaf with capacity of 3]
+    # # Test Case 2: [[1 Start Location, 1 Charger, 1 Destination without Charger] 10 time units, NissanLeaf with capacity of 10]
+    # testCases.append([
+    #     "Test Case without final charging location.",
+    #     [
+    #         [0,0],
+    #         [-3,1],
+    #         [-5,1, False]
+    #     ],
+    #     10,
+    #     NissanLeafBattery(10)
+    # ])
+
+    # Test Case 3: [[1 Start Location, 20 Chargers, 1 Destination with Charger]  20 time units, NissanLeaf with capacity of 10]
+    # Investigate why this case doesn't work. 
+    # The car should stop at stop 7 or 8 and charge until 80% full. 
     testCases.append([
         "Test Case without final charging location.",
         [
             [0,0],
-            [-3,1],
-            [-5,1, False]
+            [-1,1],
+            [-1,1],
+            [-1,1],
+            [-1,1],
+            [-1,1],
+            [-1,1],
+            [-3,3],
+            [-6,6],
+            [-1,1],
+            [-5,5, True]
         ],
-        10,
+        25,
         NissanLeafBattery(10)
     ])
 
-    
+
     return testCases
 
 def run():
     testCases = GetTestCases()
     scheduler = Scheduler()
-    schedules = scheduler.ScheduleRoutes(testCases)
+    schedules = scheduler.ScheduleRoutes(testCases, True)
     
     for schedule in schedules:
         print schedule

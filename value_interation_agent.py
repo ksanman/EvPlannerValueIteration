@@ -174,7 +174,7 @@ class ValueIterationAgent:
         """
         stop, time, battery = self.Environment.Decode(state)
         if stop != self.Environment.Stops - 1:
-            self.Schedule = {"Failed": "Trip Failed at stop {0} after {1} minutes.".format(stop, time)}
+            self.Schedule = {"Failed": "Trip Failed at stop {0} after {1} minutes ({2} time steps).".format(stop, time*15, time)}
         else:
             self.Schedule = {"Success": {"Trip Time": '{0} Minutes'.format(time*15), "Battery": battery, "Charging Stops": []}}
             for _, t in self.ChargingPoints.items():
