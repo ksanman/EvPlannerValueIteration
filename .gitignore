@@ -1,3 +1,4 @@
 *.pyc
 bash.exe.stackdump
 /.vscode
+temp/*

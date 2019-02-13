@@ -4,15 +4,17 @@ from decimal import ROUND_HALF_UP, Decimal
 
 import numpy as np
 
+from action import (ActionSpace, ChargerActionSpace, DestinationActionSpace,
+                    StartActionSpace)
 from randomizer import Randomizer
-from action import ActionSpace, StartActionSpace, ChargerActionSpace, DestinationActionSpace
+from rewards import Rewards
 
 
 class EvTripScheduleEnvironment:
     """ Represents the Trip Schedule. The schedule is a list of possible charging stations along a route, the car battery, and the time to make the trip. 
     The maximum time allocated to make the trip is 20% of the expected time.
     """
-    def __init__(self, route, expectedTripTime, battery, isDestinationCharger):
+    def __init__(self, route, expectedTripTime, battery):
         # Define the environment variables here. 
         self.Route = route
         self.Stops = len(route) 
@@ -21,9 +23,9 @@ class EvTripScheduleEnvironment:
         self.MaxTime = self.ExpectedTime + int(Decimal(self.ExpectedTime * .20).quantize(Decimal('0'), rounding=ROUND_HALF_UP))
 
         self.Battery = battery
-        self.MaxBattery = battery.Capacity
+        self.MaxBattery = battery.Capacity + 1
         
-        self.IsDestinationCharger = isDestinationCharger
+        self.IsDestinationCharger = route[-1].HasCharger
 
         # Set the action space
         self.ActionSpace = self.InitializeActionSpace()
@@ -42,7 +44,7 @@ class EvTripScheduleEnvironment:
         # It contains the probability of event happeneing, s', the reward, and if s' is terminal. 
         # There are at most 2 actions for each state. 
         self.P = {state: {action: [] for action in range(2)} for state in range(self.NumberOfStates)}
-
+        self.RewardFunctions = Rewards()
         self.InitializeEnvironment()
     
     def InitializeEnvironment(self):
@@ -76,16 +78,16 @@ class EvTripScheduleEnvironment:
             nextBattery = max(battery + location.ExpendedEnergy, 0)
 
             # Set the time reward
-            reward += self.ComputeTimeReward(nextTime)
+            reward += self.ComputeReward((nextTime, self.MaxTime), self.RewardFunctions.ComputeTimeReward)
 
             # If the new state is the terminal state
-            if stop == self.Stops - 1:
+            if nextStop == self.Stops - 1:
                 # If there is not a charger at the terminal state, set a reward for having a battery over 20%.
                 if not self.IsDestinationCharger:
-                    reward += self.ComputeRewardForDestinationWithoutCharger(nextBattery)
+                    reward += self.ComputeReward((nextBattery, self.MaxBattery), self.RewardFunctions.ComputeRewardForDestinationWithoutCharger)
             else:
-                # Set the reward for all other states
-                reward += self.ComputeDrivingRewardForBatteryCharge(nextBattery)
+                # Set the reward for all other driving states
+                reward += self.ComputeReward((nextBattery, self.MaxBattery), self.RewardFunctions.ComputeBatteryRewardForDriving)
 
         # Otherwise the action is charging
         elif action == ActionSpace.Charge:
@@ -94,9 +96,9 @@ class EvTripScheduleEnvironment:
             nextBattery = min(self.Battery.Charge(battery, nextTime - time), self.MaxBattery - 1)
 
             # Set the time reward
-            reward += self.ComputeTimeReward(nextTime)
+            reward += self.ComputeReward((nextTime, self.MaxTime), self.RewardFunctions.ComputeTimeReward)
             # Set the charging reward. The reward is negative for staying too long at a charger and overcharging the car. 
-            reward += self.ComputeBatteryChargingReward(nextBattery)
+            reward += self.ComputeReward((nextBattery, self.MaxBattery), self.RewardFunctions.ComputeBatteryRewardForCharging)
 
         # If there are no actions, return
         elif action == None:
@@ -185,14 +187,5 @@ class EvTripScheduleEnvironment:
         self.LastAction = action
         return (state, reward, done, {"prob" : probability})
 
-    def ComputeTimeReward(self, time):
-        return 1 if time < self.ExpectedTime else -1
-
-    def ComputeRewardForDestinationWithoutCharger(self, batteryCharge):
-        return 0 if batteryCharge > self.MaxBattery * .20 else -1 
-
-    def ComputeDrivingRewardForBatteryCharge(self, batteryCharge):
-        return 0 if batteryCharge > self.MaxBattery * .10 else -1
-    
-    def ComputeBatteryChargingReward(self, batteryCharge):
-        return -1 if batteryCharge > self.MaxBattery * .80 else 0
+    def ComputeReward(self, args, rewardFunction):
+        return rewardFunction(*args)

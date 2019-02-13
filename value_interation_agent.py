@@ -12,6 +12,8 @@ class ValueIterationAgent:
         self.Discount = 1.0
 
     def PerformValueIteration(self, isShowable=False):
+        """ Performs value iteration on the enviroment and populates the v-table. 
+        """
         iteration = 0
         while True:
             delta = 0
@@ -36,6 +38,8 @@ class ValueIterationAgent:
             self.PrintVTable()
 
     def PrintVTable(self):
+        """ Prints the V Table to the standard output. 
+        """
         stops = self.Environment.Stops
         maxTime = self.Environment.MaxTime
         maxBattery = self.Environment.MaxBattery
@@ -51,6 +55,9 @@ class ValueIterationAgent:
         print v3d
 
     def FindOptimalPolicy(self, isShowable=False):
+        """ Finds the optimal policy with the pre-computed V Table. 
+        """
+
         for state in range(self.Environment.NumberOfStates):
             action_values = []
             for action in self.Environment.GetActionSpaceForState(state):
@@ -66,6 +73,9 @@ class ValueIterationAgent:
             self.PrintPolicy()
     
     def PrintPolicy(self):
+        """Prints the optimal policy table to the standard output. 
+        """
+
         stops = self.Environment.Stops
         maxTime = self.Environment.MaxTime
         maxBattery = self.Environment.MaxBattery
@@ -81,6 +91,13 @@ class ValueIterationAgent:
         print p3d
 
     def EvaluatePolicy(self, numberOfTestRuns, randomState, isShowable=False):
+        """ Evaluates the given policy as a real-time agent. 
+
+            Keyword arguments:
+            numberOfTestRuns -- The number of test runs to perform. 
+            randomState -- Boolean that determines if the environment should start in a random state or the initial state (Ev car at the Start, 0 time, and fully charges)
+            isShowable -- Boolean to determine if the evaluation should print to the standard output as it runs. 
+        """
         average_reward = 0
         self.TestRunInfo = {}
 
@@ -126,6 +143,9 @@ class ValueIterationAgent:
             #Print the trip stats. 
             runInfo[testRun].update({"Average Reward": average_reward})
             average_reward += total_reward
+
+            self.BuildSchedule(state)
+
             if isShowable:
                 self.PrintEvaluation(state, total_reward)
                 print 'Average reward: ', average_reward/(testRun + 1), '\n\n'
@@ -135,6 +155,8 @@ class ValueIterationAgent:
             print 'Total average reward: ', average_reward/numberOfTestRuns
 
     def PrintEvaluation(self, state, reward):
+        """ Prints the evaluation of each test run to the standard output. 
+        """
         stop, time, battery = self.Environment.Decode(state)
         print 'Battery level: ', battery
         print 'Trip time: ', time * 15, ' minutes'
@@ -147,7 +169,32 @@ class ValueIterationAgent:
             s = 'Stop at {0} for {1} minutes.'.format(w, t)
             print(s)
 
-    def DisplayEvaluationGraphs(self):
+    def BuildSchedule(self, state):
+        """ After the policy is evaluated, an optimal schedule is built.
+        """
+        stop, time, battery = self.Environment.Decode(state)
+        if stop != self.Environment.Stops - 1:
+            self.Schedule = {"Failed": "Trip Failed at stop {0} after {1} minutes.".format(stop, time)}
+        else:
+            self.Schedule = {"Success": {"Trip Time": '{0} Minutes'.format(time*15), "Battery": battery, "Charging Stops": []}}
+            for _, t in self.ChargingPoints.items():
+                s = 'Stop at {0} for {1} minutes.'.format(stop, t*15)
+                self.Schedule["Success"]["Charging Stops"].append(s)
+
+    def GetSchedule(self):
+        """ Return a computed schedule to the user. 
+        """
+        if self.Schedule is None:
+             raise Exception("No Schedule Found!")
+        return self.Schedule 
+
+    def DisplayEvaluationGraphs(self, routeName = ""):
+        """ Display diagnostic graphs to see if the algorithm is working as expected. 
+
+            Keyword arguments:
+
+            routeName -- The name of the current route to append to figures. 
+        """
         batteryInfo = []
 
         for run in self.TestRunInfo:
@@ -156,13 +203,15 @@ class ValueIterationAgent:
                 stop, time, battery = self.Environment.Decode(state)
                 batteryInfo.append([battery, time])
 
-        self.PlotBatteryInfo(batteryInfo)
+        self.PlotBatteryInfo(batteryInfo, routeName)
 
-    def PlotBatteryInfo(self, batteryInfo):
+    def PlotBatteryInfo(self, batteryInfo, routeName):
+        """ Plots the battery level as a funtion of battery level and time. 
+        """
         batteryInfo = np.array(batteryInfo)
 
         #plot Here
-        _, batteryAxes = plt.subplots()
+        figure, batteryAxes = plt.subplots()
         time = batteryInfo[:, 1]
         battery = batteryInfo[:, 0]
         batteryAxes.plot(time, battery)
@@ -172,5 +221,9 @@ class ValueIterationAgent:
         plt.xticks(np.arange(0, max(time) + 1, 1))
         labels = batteryAxes.get_xticklabels()
         plt.setp(labels, horizontalalignment='right')
-        batteryAxes.set(xlabel='Time', ylabel='Battery Charge', title='Battery Charge vs Time')
-        plt.show()
+        batteryAxes.set(xlabel='Time', ylabel='Battery Charge', title=routeName + ': Battery Charge vs Time')
+        
+        if routeName == "":
+            plt.show()
+        else:
+            figure.savefig('temp/' + routeName + '_BatteryChargeVsTime.png', dpi=figure.dpi)
