@@ -29,7 +29,7 @@
             "type": "python",
             "request": "launch",
             "module": "optimizer",
-            "console": "integratedTerminal"
+            "console": "none"
         },
         {
             "name": "Python: Django",

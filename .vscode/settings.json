@@ -1,2 +1,6 @@
 {
+    "files.exclude": {
+        "*.pyc": true,
+        "bash.exe.stackdump": true
+    }
 }
