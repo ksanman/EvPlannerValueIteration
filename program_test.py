@@ -42,6 +42,8 @@ def GetTestCases():
         10,
         NissanLeafBattery(10)
     ])
+
+    
     return testCases
 
 def run():

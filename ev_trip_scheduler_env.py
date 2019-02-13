@@ -30,7 +30,7 @@ class EvTripScheduleEnvironment:
         # Set the action space
         self.ActionSpace = self.InitializeActionSpace()
 
-        print "\n\n Environment: \n\n Number of Stops: {0}\n Battery Capacity: {1}\n Expected Trip Time: {2}\n Max Time: {3} \n Destination Has a Charger: {4}\n".format(self.Stops, self.MaxBattery, self.ExpectedTime, self.MaxTime, self.IsDestinationCharger)
+        print "\n\n Environment: \n\n Number of Stops: {0}\n Battery Capacity: {1}\n Expected Trip Time: {2}\n Max Time: {3} \n Destination Has a Charger: {4}\n".format(self.Stops, battery.Capacity, self.ExpectedTime, self.MaxTime, self.IsDestinationCharger)
 
         # Construct the environment here:
         self.NumberOfStates = self.Stops * self.MaxTime * self.MaxBattery
