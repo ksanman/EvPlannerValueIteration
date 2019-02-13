@@ -11,7 +11,7 @@ class ValueIterationAgent:
         self.Policy = np.zeros(self.Environment.NumberOfStates)
         self.Discount = 1.0
 
-    def PerformValueIteration(self):
+    def PerformValueIteration(self, isShowable=False):
         iteration = 0
         while True:
             delta = 0
@@ -32,22 +32,25 @@ class ValueIterationAgent:
             if(delta <= 0.1):
                 break
 
+        if isShowable:                
+            self.PrintVTable()
+
     def PrintVTable(self):
         stops = self.Environment.Stops
         maxTime = self.Environment.MaxTime
         maxBattery = self.Environment.MaxBattery
-        v3d = self.V.reshape((stops,maxTime,maxBattery)).transpose()
+        v3d = self.V.reshape((stops,maxTime,maxBattery))
         state = 0
-        for k in range(maxBattery):
-            for j in range(maxTime):
-                for i in range(stops):
-                    v3d[i,j,k] = self.V[state]
+        for s in range(stops):
+            for t in range(maxTime):
+                for b in range(maxBattery):
+                    v3d[s,t,b] = self.V[state]
                     state += 1
 
         print '\n V Table: \n'
         print v3d
 
-    def FindOptimalPolicy(self):
+    def FindOptimalPolicy(self, isShowable=False):
         for state in range(self.Environment.NumberOfStates):
             action_values = []
             for action in self.Environment.GetActionSpaceForState(state):
@@ -58,28 +61,32 @@ class ValueIterationAgent:
                 continue
 
             self.Policy[state] = np.argmax(action_values)
+        
+        if isShowable:
+            self.PrintPolicy()
     
     def PrintPolicy(self):
         stops = self.Environment.Stops
         maxTime = self.Environment.MaxTime
         maxBattery = self.Environment.MaxBattery
-        p3d = self.Policy.reshape((stops,maxTime,maxBattery)).transpose()
+        p3d = self.Policy.reshape((stops,maxTime,maxBattery))
         state = 0
-        for k in range(maxBattery):
-            for j in range(maxTime):
-                for i in range(stops):
-                    p3d[i,j,k] = self.Policy[state]
+        for s in range(stops):
+            for t in range(maxTime):
+                for b in range(maxBattery):
+                    p3d[s,t,b] = self.Policy[state]
                     state += 1
 
-        print '\n V Table: \n'
+        print '\n Policy Table: \n'
         print p3d
 
-    def EvaluatePolicy(self, numberOfTestRuns, randomState):
+    def EvaluatePolicy(self, numberOfTestRuns, randomState, isShowable=False):
         average_reward = 0
         self.TestRunInfo = {}
 
         for testRun in range(numberOfTestRuns):
-            print 'Test Run #: ', testRun + 1
+            if isShowable:
+                print 'Test Run #: ', testRun + 1
             runInfo = {testRun: {"Steps": {}}}
 
             state = self.Environment.Reset(randomState)
@@ -119,17 +126,21 @@ class ValueIterationAgent:
             #Print the trip stats. 
             runInfo[testRun].update({"Average Reward": average_reward})
             average_reward += total_reward
-            self.PrintEvaluation(state, total_reward)
-            print 'Average reward: ', average_reward/(testRun + 1), '\n\n'
+            if isShowable:
+                self.PrintEvaluation(state, total_reward)
+                print 'Average reward: ', average_reward/(testRun + 1), '\n\n'
         
             self.TestRunInfo.update(runInfo)
-
-        print 'Total average reward: ', average_reward/numberOfTestRuns
+        if isShowable:
+            print 'Total average reward: ', average_reward/numberOfTestRuns
 
     def PrintEvaluation(self, state, reward):
         stop, time, battery = self.Environment.Decode(state)
         print 'Battery level: ', battery
         print 'Trip time: ', time * 15, ' minutes'
+        if stop != self.Environment.Stops - 1:
+            print 'Trip Failed at stop: {0}'.format(stop)
+        
         for _,p in self.ChargingPoints.items():
             w = stop
             t = p*15
@@ -137,8 +148,6 @@ class ValueIterationAgent:
             print(s)
 
     def DisplayEvaluationGraphs(self):
-        #print self.TestRunInfo
-
         batteryInfo = []
 
         for run in self.TestRunInfo:

@@ -18,10 +18,15 @@ def CreateRoute(stops):
 def main():
     # Define the environment and create it. 
 
-    # Step the stops here. 
-    stops = [[-1,1], [-1,1, True]]
+    # Define the test environment. 
+    stops = [
+        [-1,1], 
+        [-1,1], 
+        [-1,1, True]
+    ]
     time = 3
-    battery = 3
+    battery = 4
+    isPrintStats = True
 
 
     # This is a route object, that contains information about the ev vehicles route. 
@@ -37,13 +42,11 @@ def main():
 
     # Build the value table
     agent = ValueIterationAgent(environment)
-    agent.PerformValueIteration()
-    agent.PrintVTable()
-    agent.FindOptimalPolicy()
-    agent.PrintPolicy()
+    agent.PerformValueIteration(isPrintStats)
+    agent.FindOptimalPolicy(isPrintStats)
 
     # Evaluate
-    agent.EvaluatePolicy(1, False)
+    agent.EvaluatePolicy(1, False, isPrintStats)
 
     # Display Graphs
     agent.DisplayEvaluationGraphs()
