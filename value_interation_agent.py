@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+from collections import OrderedDict
 
 from ev_trip_scheduler_env import EvTripScheduleEnvironment
 
@@ -102,15 +104,17 @@ class ValueIterationAgent:
         self.TestRunInfo = {}
 
         for testRun in range(numberOfTestRuns):
+            
             if isShowable:
                 print 'Test Run #: ', testRun + 1
+            
             runInfo = {testRun: {"Steps": {}}}
 
             state = self.Environment.Reset(randomState)
             runInfo[testRun]["Steps"].update({0: {"State": state, "Action": None, "Reward": 0, "Is Terminated": False, 'Step Total Reward': 0}})
             total_reward = 0
             step_index = 1
-            self.ChargingPoints = {}
+            self.ChargingPoints = OrderedDict()
 
             while True:
                 # Get the optimal action. 
@@ -136,7 +140,6 @@ class ValueIterationAgent:
                 runInfo[testRun]["Steps"][step_index].update({"Step Total Reward": total_reward})
 
                 step_index += 1
-                
 
                 if done:
                     break
@@ -163,8 +166,7 @@ class ValueIterationAgent:
         if stop != self.Environment.Stops - 1:
             print 'Trip Failed at stop: {0}'.format(stop)
         
-        for _,p in self.ChargingPoints.items():
-            w = stop
+        for w ,p in self.ChargingPoints.items():
             t = p*15
             s = 'Stop at {0} for {1} minutes.'.format(w, t)
             print(s)
@@ -176,9 +178,9 @@ class ValueIterationAgent:
         if stop != self.Environment.Stops - 1:
             self.Schedule = {"Failed": "Trip Failed at stop {0} after {1} minutes ({2} time steps).".format(stop, time*15, time)}
         else:
-            self.Schedule = {"Success": {"Trip Time": '{0} Minutes'.format(time*15), "Battery": battery, "Charging Stops": []}}
-            for _, t in self.ChargingPoints.items():
-                s = 'Stop at {0} for {1} minutes.'.format(stop, t*15)
+            self.Schedule = {"Success": {"Trip Time": '{0} Minutes ({1} time steps)'.format(time*15, time), "Battery": battery, "Charging Stops": []}}
+            for w, t in self.ChargingPoints.items():
+                s = 'Stop at {0} for {1} minutes.'.format(w, t*15)
                 self.Schedule["Success"]["Charging Stops"].append(s)
 
     def GetSchedule(self):
@@ -226,4 +228,7 @@ class ValueIterationAgent:
         if routeName == "":
             plt.show()
         else:
+            if not os.path.exists("temp"):
+                os.mkdir('temp/')
+
             figure.savefig('temp/' + routeName + '_BatteryChargeVsTime.png', dpi=figure.dpi)

@@ -51,7 +51,7 @@ class EvTripScheduleEnvironment:
         for stop in range(self.Stops):
             for time in range(self.MaxTime):
                 for battery in range(self.MaxBattery):
-                    state = self.Encode(stop, time, battery)
+                    state = int(self.Encode(stop, time, battery))
 
                     if stop == 0:
                         self.InitialStateDistribution[state] += 1
@@ -66,7 +66,7 @@ class EvTripScheduleEnvironment:
         self.Reset()
 
     def PopulatePTable(self, state,  stop, time, battery, action):
-        reward = 0
+        reward = 0.0
         done = False
 
         # if the action is driving
@@ -93,12 +93,12 @@ class EvTripScheduleEnvironment:
         elif action == ActionSpace.Charge:
             nextStop = stop
             nextTime = min(time + 1, self.MaxTime - 1)
-            nextBattery = min(self.Battery.Charge(battery, nextTime - time), self.MaxBattery - 1)
+            nextBattery = min(self.Battery.Charge(battery, nextTime - time, 13.3), self.MaxBattery - 1)
 
             # Set the time reward
             reward += self.ComputeReward((nextTime, self.MaxTime), self.RewardFunctions.ComputeTimeReward)
             # Set the charging reward. The reward is negative for staying too long at a charger and overcharging the car. 
-            reward += self.ComputeReward((nextBattery, self.MaxBattery), self.RewardFunctions.ComputeBatteryRewardForCharging)
+            reward += self.ComputeReward((nextBattery, self.MaxBattery, nextBattery - battery), self.RewardFunctions.ComputeBatteryRewardForCharging)
 
         # If there are no actions, return
         elif action == None:
@@ -110,7 +110,7 @@ class EvTripScheduleEnvironment:
                     or (nextBattery == 0 and action is not 1):
             done = True
 
-        newState = self.Encode(nextStop, nextTime, nextBattery)
+        newState = int(self.Encode(nextStop, nextTime, nextBattery))
         self.P[state][action].append((1.0, newState, reward, done))
 
     def InitializeActionSpace(self):

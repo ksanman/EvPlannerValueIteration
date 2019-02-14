@@ -13,7 +13,7 @@ class Rewards:
             currentTime -- The current timestep
             expectedTime -- The expect time to complete the trip. 
         """
-        return 1 if currentTime < expectedTime else -1
+        return (expectedTime - currentTime) * 1 if currentTime < expectedTime else (expectedTime - currentTime) * 1
 
     def ComputeRewardForDestinationWithoutCharger(self, currentBatteryCharge, batteryCapacity):
         """ Computes the reward given the current battery charge for a Destination without a charger. 
@@ -25,7 +25,8 @@ class Rewards:
             currentBatteryCharge -- The current charge level in the battery. 
             batteryCapacity -- The capacity of the battery in KWH. 
         """
-        return 0 if currentBatteryCharge > batteryCapacity * .20 else -1 
+        #return -pow((1/5) * ((currentBatteryCharge/batteryCapacity)*100) - 10, 2) if ((currentBatteryCharge/batteryCapacity)*100) < 50 else 0
+        return 0 if currentBatteryCharge > batteryCapacity * .20 else -100
 
     def ComputeBatteryRewardForDriving(self, currentBatteryCharge, batteryCapacity):
         """ Computes the reward given the current battery charge after a driving action. 
@@ -37,9 +38,10 @@ class Rewards:
             currentBatteryCharge -- The current charge level in the battery. 
             batteryCapacity -- The capacity of the battery in KWH. 
         """
-        return 0 if currentBatteryCharge > batteryCapacity * .10 else -1
+        #return 0 if ((currentBatteryCharge/batteryCapacity)*100) >  batteryCapacity * .20 else -(pow((1/5) * ((currentBatteryCharge/batteryCapacity)*100) - 10, 2))
+        return 0 if currentBatteryCharge > batteryCapacity * .10 else -10
 
-    def ComputeBatteryRewardForCharging(self, currentBatteryCharge, batteryCapacity):
+    def ComputeBatteryRewardForCharging(self, currentBatteryCharge, batteryCapacity, purchasedPower, chargingPrice=0.13):
         """ Computes the reward given the current battery charge after a charging action. 
             The reward is 0 if the battery charge is less than 80% the capacity. 
             The reward is negative if the battery charge is greater than 80% the capacity. 
@@ -48,5 +50,8 @@ class Rewards:
 
             currentBatteryCharge -- The current charge level in the battery. 
             batteryCapacity -- The capacity of the battery in KWH. 
+            purchasedPower -- The amount of energy purchesed. 
+            chargingPrice -- Pre computed price of charging the battery to the currentBatteryCharge. 
         """
-        return -1 if currentBatteryCharge > batteryCapacity * .80 else 0
+        return -(purchasedPower * chargingPrice) if currentBatteryCharge < batteryCapacity * .80 else -100
+        #return ((batteryCapacity * .80) - currentBatteryCharge) * 3 if currentBatteryCharge > batteryCapacity * .80 else 0
