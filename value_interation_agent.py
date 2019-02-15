@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from collections import OrderedDict
+from decimal import Decimal, ROUND_HALF_UP
 
 from ev_trip_scheduler_env import EvTripScheduleEnvironment
 
@@ -111,6 +112,10 @@ class ValueIterationAgent:
             runInfo = {testRun: {"Steps": {}}}
 
             state = self.Environment.Reset(randomState)
+
+            if isShowable:
+                print "Stop: {0}, Time: {1}, Battery: {2}".format(*self.Environment.Decode(state))
+
             runInfo[testRun]["Steps"].update({0: {"State": state, "Action": None, "Reward": 0, "Is Terminated": False, 'Step Total Reward': 0}})
             total_reward = 0
             step_index = 1
@@ -122,6 +127,9 @@ class ValueIterationAgent:
                 
                 # Act.  
                 state, reward, done, _ = self.Environment.Step(actionToTake)
+                
+                if isShowable:
+                    print "Stop: {0}, Time: {1}, Battery: {2}".format(*self.Environment.Decode(state))
 
                 runInfo[testRun]["Steps"].update({step_index: {"State": state, "Action": actionToTake, "Reward": reward, "Is Terminated": done}})
                 
@@ -166,9 +174,8 @@ class ValueIterationAgent:
         if stop != self.Environment.Stops - 1:
             print 'Trip Failed at stop: {0}'.format(stop)
         
-        for w ,p in self.ChargingPoints.items():
-            t = p*15
-            s = 'Stop at {0} for {1} minutes.'.format(w, t)
+        for w ,t in self.ChargingPoints.items():
+            s = 'Stop at {0} for {1} minutes ({2} time steps).'.format(self.Environment.Route[w].Name, t*15, t)
             print(s)
 
     def BuildSchedule(self, state):
@@ -180,7 +187,7 @@ class ValueIterationAgent:
         else:
             self.Schedule = {"Success": {"Trip Time": '{0} Minutes ({1} time steps)'.format(time*15, time), "Battery": battery, "Charging Stops": []}}
             for w, t in self.ChargingPoints.items():
-                s = 'Stop at {0} for {1} minutes.'.format(w, t*15)
+                s = 'Stop at {0} for {1} minutes ({2} time steps).'.format(self.Environment.Route[w].Name, t*15, t)
                 self.Schedule["Success"]["Charging Stops"].append(s)
 
     def GetSchedule(self):
@@ -198,29 +205,130 @@ class ValueIterationAgent:
             routeName -- The name of the current route to append to figures. 
         """
         batteryInfo = []
+        batteryDistance = []
+        timeDistance = []
 
         for run in self.TestRunInfo:
             for step in self.TestRunInfo[run]["Steps"]:
                 state = self.TestRunInfo[run]["Steps"][step]["State"]
+                action = self.TestRunInfo[run]["Steps"][step]["Action"]
                 stop, time, battery = self.Environment.Decode(state)
+                location = self.Environment.Route[stop]
                 batteryInfo.append([battery, time])
+                if action == 0:
+                    batteryDistance.append([battery, location.Distance])
+                    timeDistance.append([time, location.Distance])
+                else:
+                    # There is no distance while charging. 
+                    batteryDistance.append([battery, 0])
+                    timeDistance.append([time, 0])
+
 
         self.PlotBatteryInfo(batteryInfo, routeName)
+        self.PlotBatteryVsTime(batteryDistance, routeName)
+        self.PlotTimeVsDistance(timeDistance, routeName)
+
+    def PlotBatteryVsTime(self, batteryDistance, routeName):
+        """ Plots the battery level as a funtion of battery level and distance. 
+        """
+        batteryDistance = np.array(batteryDistance)
+
+        #plot Here
+        figure, batteryAxes = plt.subplots()
+        plt.ylim(ymax=self.Environment.MaxBattery, ymin=0)
+        plt.xlim(xmin=0)
+        distance = batteryDistance[:, 1]
+        milage = []
+        total = 0
+        for d in distance:
+            total += d
+            milage.append(total)
+
+        battery = batteryDistance[:, 0]
+        batteryAxes.plot(milage, battery)
+
+        yTickSpacing = int(Decimal((max(battery) + 1)/10).quantize(Decimal('0'), rounding=ROUND_HALF_UP)) if max(battery) + 1 > 10 else 1
+        plt.yticks(np.arange(0, max(battery) + 1, yTickSpacing))
+
+        xTickSpacing = int(Decimal((max(milage) + 1)/10).quantize(Decimal('0'), rounding=ROUND_HALF_UP)) if max(milage) + 1 > 10 else 1
+        plt.xticks(np.arange(0, max(milage) + 1, xTickSpacing))
+
+        labels = batteryAxes.get_xticklabels()
+        plt.setp(labels, horizontalalignment='right')
+        batteryAxes.set(xlabel='Distance', ylabel='Battery Charge', title=routeName + ': Battery Charge vs Distance')
+
+
+        if routeName == "":
+            plt.show()
+        else:
+            if not os.path.exists("temp"):
+                os.mkdir('temp/')
+
+            figure.savefig('temp/' + routeName + '_BatteryChargeVsDistance.png', dpi=figure.dpi)
+
+    def PlotTimeVsDistance(self, timeDistance, routeName):
+        """ Plots the time as a funtion of distance. 
+        """ 
+        timeDistance = np.array(timeDistance)
+
+        #plot Here
+        figure, axes = plt.subplots()
+        plt.xlim(xmax=self.Environment.MaxTime, xmin=0)
+        plt.ylim(ymin=0)
+        distance = timeDistance[:, 1]
+        milage = []
+        total = 0
+        for d in distance:
+            total += d
+            milage.append(total)
+
+        time = timeDistance[:, 0]
+        times = []
+        total = 0
+        for t in time:
+            total += t
+            times.append(total)
+
+        axes.plot(times, milage)
+
+        xTickSpacing = int(Decimal((self.Environment.MaxTime + 1)/10).quantize(Decimal('0'), rounding=ROUND_HALF_UP)) if self.Environment.MaxTime + 1 > 10 else 1
+        plt.xticks(np.arange(0, self.Environment.MaxTime + 1, xTickSpacing))
+        yTickSpacing = int(Decimal((max(milage) + 1)/10).quantize(Decimal('0'), rounding=ROUND_HALF_UP)) if max(milage) + 1 > 10 else 1
+        plt.yticks(np.arange(0, max(milage) + 1, yTickSpacing))
+
+        labels = axes.get_xticklabels()
+
+        plt.setp(labels, horizontalalignment='right')
+        axes.set(xlabel='Time', ylabel='Distance', title=routeName + ': Distance vs Time')
+        
+        if routeName == "":
+            plt.show()
+        else:
+            if not os.path.exists("temp"):
+                os.mkdir('temp/')
+
+            figure.savefig('temp/' + routeName + '_BatteryChargeVsTime.png', dpi=figure.dpi)
 
     def PlotBatteryInfo(self, batteryInfo, routeName):
         """ Plots the battery level as a funtion of battery level and time. 
         """
         batteryInfo = np.array(batteryInfo)
+        expectedTime = self.Environment.ExpectedTime
 
         #plot Here
         figure, batteryAxes = plt.subplots()
+        plt.ylim(ymax=self.Environment.MaxBattery, ymin=0)
+        plt.xlim(xmax=self.Environment.MaxTime,xmin=0)
         time = batteryInfo[:, 1]
         battery = batteryInfo[:, 0]
         batteryAxes.plot(time, battery)
-        plt.ylim(ymin=0)
-        plt.xlim(xmin=0)
-        plt.yticks(np.arange(0, max(battery) + 1, 1))
-        plt.xticks(np.arange(0, max(time) + 1, 1))
+        batteryAxes.axvline(expectedTime, linestyle='--')
+
+        yTickSpacing = int(Decimal((max(battery) + 1)/10).quantize(Decimal('0'), rounding=ROUND_HALF_UP)) if max(battery) + 1 > 10 else 1
+        plt.yticks(np.arange(0, max(battery) + 1, yTickSpacing))
+        xTickSpacing = int(Decimal((self.Environment.MaxTime + 1)/10).quantize(Decimal('0'), rounding=ROUND_HALF_UP)) if self.Environment.MaxTime + 1 > 10 else 1
+        plt.xticks(np.arange(0, self.Environment.MaxTime + 1, xTickSpacing))
+
         labels = batteryAxes.get_xticklabels()
         plt.setp(labels, horizontalalignment='right')
         batteryAxes.set(xlabel='Time', ylabel='Battery Charge', title=routeName + ': Battery Charge vs Time')

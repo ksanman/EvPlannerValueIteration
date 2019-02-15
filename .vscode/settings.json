@@ -4,5 +4,5 @@
         "bash.exe.stackdump": true
     },
     "python.linting.pylintEnabled": true,
-    "python.pythonPath": "C:\\Python27\\python.exe"
+    "python.pythonPath": "C:\\Python27amd64\\python.exe"
 }

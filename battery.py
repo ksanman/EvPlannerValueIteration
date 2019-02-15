@@ -14,12 +14,11 @@ class Battery(object):
         self.Capacity = capacity
         self.SystemVoltage = systemVoltage
 
-    def Discharge(self, currentCharge, time):
+    def Discharge(self, time):
         """ Calculates the discharge rate of the battery. 
             
             Keyword arguments:
 
-            currentCharge -- The current charge in the battery
             time -- The duration of the discharge. 
         """
         
@@ -27,13 +26,15 @@ class Battery(object):
             raise Exception("Time must be represented as an integer value!")
 
         # For every time block, decrement 1 from the battery charge. 
+        currentCharge = 0
+
         for _ in range(time):
-            currentCharge -= 1
+            currentCharge += 1
         
-        return currentCharge
+        return -currentCharge
 
 
-    def Charge(self, currentCharge, time, chargerCurrent):
+    def Charge(self, time, chargerCurrent):
         """ Calculates the Charge in a battery after chargeing for a period of time
 
             Keyword arguments:
@@ -45,7 +46,6 @@ class Battery(object):
         if type(time) != int:
             raise Exception("Time must be represented as an integer value!")
 
-        # For every time block, increment 1 from the battery charge. 
         hours = self.ConvertToHours(time)
         charge = ( hours * self.LionBatteryEfficiency * chargerCurrent)
         kwh = int(Decimal(self.AhToKwh(charge)).quantize(Decimal('0'), rounding=ROUND_HALF_UP))

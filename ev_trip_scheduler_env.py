@@ -84,21 +84,21 @@ class EvTripScheduleEnvironment:
             if nextStop == self.Stops - 1:
                 # If there is not a charger at the terminal state, set a reward for having a battery over 20%.
                 if not self.IsDestinationCharger:
-                    reward += self.ComputeReward((nextBattery, self.MaxBattery), self.RewardFunctions.ComputeRewardForDestinationWithoutCharger)
+                    reward += self.ComputeReward((nextBattery, self.MaxBattery - 1), self.RewardFunctions.ComputeRewardForDestinationWithoutCharger)
             else:
                 # Set the reward for all other driving states
-                reward += self.ComputeReward((nextBattery, self.MaxBattery), self.RewardFunctions.ComputeBatteryRewardForDriving)
+                reward += self.ComputeReward((nextBattery, self.MaxBattery - 1), self.RewardFunctions.ComputeBatteryRewardForDriving)
 
         # Otherwise the action is charging
         elif action == ActionSpace.Charge:
             nextStop = stop
             nextTime = min(time + 1, self.MaxTime - 1)
-            nextBattery = min(self.Battery.Charge(battery, nextTime - time, 13.3), self.MaxBattery - 1)
+            nextBattery = min(battery + self.Battery.Charge(nextTime - time, self.Route[stop].Current), self.MaxBattery - 1)
 
             # Set the time reward
             reward += self.ComputeReward((nextTime, self.MaxTime), self.RewardFunctions.ComputeTimeReward)
             # Set the charging reward. The reward is negative for staying too long at a charger and overcharging the car. 
-            reward += self.ComputeReward((nextBattery, self.MaxBattery, nextBattery - battery), self.RewardFunctions.ComputeBatteryRewardForCharging)
+            reward += self.ComputeReward((nextBattery, self.MaxBattery - 1, nextBattery - battery), self.RewardFunctions.ComputeBatteryRewardForCharging)
 
         # If there are no actions, return
         elif action == None:

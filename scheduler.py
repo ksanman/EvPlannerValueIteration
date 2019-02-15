@@ -2,16 +2,8 @@ from battery import NissanLeafBattery
 from ev_trip_scheduler_env import EvTripScheduleEnvironment
 from stop import Charger, Destination, Start
 from value_interation_agent import ValueIterationAgent
-
-
-class Trip:
-    """ An object used to hold information about a particular trip. 
-    """
-    def __init__(self, name, route, tripTime, battery):
-        self.Name = name
-        self.Route = route
-        self.TripTime = tripTime
-        self.Battery = battery
+from trip import Trip
+from charger_info import Point, ChargerPoint
 
 class Scheduler:
     """ Provides methods to schedule the charging locations several EV trip routes. 
@@ -50,19 +42,50 @@ class Scheduler:
         stops = route[1]
         tripTime = route[2]
         battery = route[3]
+        
+        trip = []
 
+        for stop in stops:
+            if stop.Name == 'Start':
+                    trip.append(Start(stop.Name))
+            elif stop.Name == 'Destination' or stop == stops[-1]:
+                trip.append(self.GetDestination(stop, stops, battery))
+            elif type(stop) == ChargerPoint:
+                trip.append(self.GetChargingPoint(stop, stops, battery))
+        
         # Add the starting location and lat/long points. 
-        trip = [Start()]
+        #trip = [Start()]
 
         # For each intermediate charger, add it's information, engery expended to reach the location, and the time to reach the location. 
-        for stop in range(1, len(stops) - 1):
-            trip.append(Charger(stops[stop][0], stops[stop][1]))
+        # for stop in range(1, len(stops) - 1):
+        #     trip.append(Charger(stops[stop][0], stops[stop][1]))
 
-        # Append information about the destination. 
-        trip.append(Destination(stops[-1][0], stops[-1][1], stops[-1][2]))
+        # # Append information about the destination. 
+        # trip.append(Destination(stops[-1][0], stops[-1][1], stops[-1][2]))
 
         # Return the trip object. 
         return Trip(name, trip, tripTime, battery)
+
+    def GetDestination(self, stop, stops, battery):
+        previousStop = stops[stops.index(stop) - 1]
+        distance, time = self.GetDistanceAndTime(previousStop, stop)
+        energyExpended = battery.Discharge(time)
+        return Destination(energyExpended,time, distance, stop.Name, type(stop) == ChargerPoint)
+
+    def GetChargingPoint(self, stop, stops, battery):
+        previousStop = stops[stops.index(stop) - 1]
+        distance, time = self.GetDistanceAndTime(previousStop, stop)
+        energyExpended = battery.Discharge(time)
+        return Charger(energyExpended,time, distance, stop.Name, stop.Current)
+
+    def GetDistanceAndTime(self, point1, point2):
+        """ Return the distance and time to travel the distance. 
+            This will be replaced with OSRM when integrating. 
+        """
+        d1 = abs(point2.Latitude - point1.Latitude)
+        # For future distance calculations. 
+        #d2 = point2.Longitude - point1.Longitude
+        return d1, d1
 
     def OptimizeRoute(self, routeName, route, battery, expectedTimeToDestination, isPrintStats):
         """

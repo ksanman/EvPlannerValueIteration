@@ -1,5 +1,8 @@
 from scheduler import Scheduler
 from battery import NissanLeafBattery
+from route_builder import RouteBuilder
+from charger_info import Point
+from decimal import Decimal, ROUND_HALF_UP
 
 def GetTestCases():
     """ Method used to return test cases for testing the optimizer. 
@@ -15,54 +18,52 @@ def GetTestCases():
 
         battery is a derivative of the Battery class from battery.py
     """
+    routeBuilder = RouteBuilder()
+
 
     testCases = []
 
-    # Test Case 1: [[1 Start Location, 1 Charger, 1 Destination with Charger], 10 time units, NissanLeaf with capacity of 10]
+    # Simple Test Case with Charger at end
+    # chargers = routeBuilder.GetChargersInOrder(4)
+    # route = [Point("Start", 0, 0)]
+    # route.extend(chargers)
+    
     # testCases.append([
-    #     "Test Case with final charging location.",
-    #     [
-    #         [0,0],
-    #         [-3,1],
-    #         [-5,1, True]
-    #     ],
-    #     10,
-    #     NissanLeafBattery(10)
+    #     "Test Case 1",
+    #     route, 
+    #     6, 
+    #     NissanLeafBattery(4)
     # ])
 
-
-    # # Test Case 2: [[1 Start Location, 1 Charger, 1 Destination without Charger] 10 time units, NissanLeaf with capacity of 10]
+    # # # Simple Test Case with Charger not at end
+    # chargers = routeBuilder.GetChargersInOrder(3)
+    # route = [Point("Start", 0, 0)]
+    # route.extend(chargers)
+    # route.append(Point("End", 4, 4))
+    
     # testCases.append([
-    #     "Test Case without final charging location.",
-    #     [
-    #         [0,0],
-    #         [-3,1],
-    #         [-5,1, False]
-    #     ],
-    #     10,
-    #     NissanLeafBattery(10)
+    #     "Test Case 2",
+    #     route, 
+    #     6, 
+    #     NissanLeafBattery(4)
     # ])
 
-    # Test Case 3: [[1 Start Location, 20 Chargers, 1 Destination with Charger]  20 time units, NissanLeaf with capacity of 10]
-    # Investigate why this case doesn't work. 
-    # The car should stop at stop 7 or 8 and charge until 80% full. 
+    # Simple Test Case with Random Chargers
+    chargers = routeBuilder.GetRandomSample(4)
+    route = [Point("Start", 0, 0)]
+    route.extend(chargers)
+    time = 0
+    for stop in route[1:]:
+        _, t = GetDistanceAndTime(route[route.index(stop) - 1], stop)
+        time += t
+    
+    time = int(Decimal(time * 1.1).quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+    
     testCases.append([
-        "Test Case without final charging location.",
-        [
-            [0,0],  # 0
-            [-1,1], # 1
-            [-1,1], # 2
-            [-1,1], # 3
-            [-1,1], # 4
-            [-1,1], # 5
-            [-1,1], # 6
-            [-3,3], # 7 
-            [-6,6], # 8
-            [-1,1], # 9
-            [-5,5, True] # 10
-        ],
-        30,
-        NissanLeafBattery(10)
+        "",
+        route, 
+        40, 
+        NissanLeafBattery(20)
     ])
 
 
@@ -75,6 +76,15 @@ def run():
     
     for schedule in schedules:
         print schedule
+
+def GetDistanceAndTime(point1, point2):
+    """ Return the distance and time to travel the distance. 
+        This will be replaced with OSRM when integrating. 
+    """
+    d1 = abs(point2.Latitude - point1.Latitude)
+    # For future distance calculations. 
+    #d2 = point2.Longitude - point1.Longitude
+    return d1, d1
 
 if __name__ == '__main__':
     run()
