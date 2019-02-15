@@ -49,7 +49,7 @@ def GetTestCases():
     # ])
 
     # Simple Test Case with Random Chargers
-    chargers = routeBuilder.GetRandomSample(4)
+    chargers = routeBuilder.GetRandomSample(10)
     route = [Point("Start", 0, 0)]
     route.extend(chargers)
     time = 0
@@ -57,7 +57,7 @@ def GetTestCases():
         _, t = GetDistanceAndTime(route[route.index(stop) - 1], stop)
         time += t
     
-    time = int(Decimal(time * 1.1).quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+    time = int(Decimal(time * 1.25).quantize(Decimal('0'), rounding=ROUND_HALF_UP))
     
     testCases.append([
         "",
