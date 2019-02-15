@@ -62,7 +62,7 @@ def GetTestCases():
     testCases.append([
         "",
         route, 
-        40, 
+        time, 
         NissanLeafBattery(20)
     ])
 
