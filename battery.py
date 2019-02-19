@@ -34,8 +34,15 @@ class Battery(object):
         return -currentCharge
 
 
-    def Charge(self, time, chargerCurrent):
+    def Charge(self, time, chargerVoltage, chargerAmps):
         """ Calculates the Charge in a battery after chargeing for a period of time
+
+            Formula:
+            P = load power divided by 1000 = U (voltage) * I (Amperage) / 1000 = Load in KW
+            c = power generated in kw
+            t = time (in hours)
+
+            c = P * t
 
             Keyword arguments:
 
@@ -46,10 +53,11 @@ class Battery(object):
         if type(time) != int:
             raise Exception("Time must be represented as an integer value!")
 
-        hours = self.ConvertToHours(time)
-        charge = ( hours * self.LionBatteryEfficiency * chargerCurrent)
-        kwh = int(Decimal(self.AhToKwh(charge)).quantize(Decimal('0'), rounding=ROUND_HALF_UP))
-        return kwh
+        P = (chargerVoltage * chargerAmps) / 1000
+        t = self.ConvertToHours(time)
+        c = (t * P)
+        #kwh = int(Decimal(self.AhToKwh(charge)).quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+        return c
 
     def ConvertToHours(self, timeBlock):
         """ Converts a 15 minute time block to hours

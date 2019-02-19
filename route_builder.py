@@ -29,7 +29,7 @@ class RouteBuilder:
         # ]
         self.ChargerList = []
         for c in range(1, 20):
-            self.ChargerList.append(ChargerPoint(c, "charger{0}".format(c), c, c, 25))
+            self.ChargerList.append(ChargerPoint(c, "charger{0}".format(c), c, c, 400, 32))
 
     def GetChargersInOrder(self, numberOfChargers):
         return self.ChargerList[:numberOfChargers]

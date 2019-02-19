@@ -25,7 +25,7 @@ class Start(Stop):
         super(Start, self).__init__(0, 0, 0, name)
 
 class Charger(Stop):
-    def __init__(self, expendedEnergy, tripTime, distance, name, current):
+    def __init__(self, expendedEnergy, tripTime, distance, name, voltage, current):
         """ Represents a charging station along a route. 
 
             Keyword arguments:
@@ -34,6 +34,7 @@ class Charger(Stop):
             tripTime -- The duration of the trip from the previous stop to the current stop. 
         """
         self.Current = current
+        self.Voltage = voltage
         super(Charger, self).__init__(expendedEnergy, tripTime, distance, name)
 
 class Destination(Stop):

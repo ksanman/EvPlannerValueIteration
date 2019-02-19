@@ -23,28 +23,37 @@ def GetTestCases():
 
     testCases = []
 
-    # Simple Test Case with Charger at end
+    # # Simple Test Case with Charger at end
     # chargers = routeBuilder.GetChargersInOrder(4)
     # route = [Point("Start", 0, 0)]
     # route.extend(chargers)
+    # time = 1
+    # for stop in route[1:]:
+    #     _, t = GetDistanceAndTime(route[route.index(stop) - 1], stop)
+    #     time += t
     
     # testCases.append([
     #     "Test Case 1",
     #     route, 
-    #     6, 
+    #     time, 
     #     NissanLeafBattery(4)
     # ])
 
-    # # # Simple Test Case with Charger not at end
+    # # Simple Test Case with Charger not at end
     # chargers = routeBuilder.GetChargersInOrder(3)
     # route = [Point("Start", 0, 0)]
     # route.extend(chargers)
     # route.append(Point("End", 4, 4))
+    # time = 1
+    # for stop in route[1:]:
+    #     _, t = GetDistanceAndTime(route[route.index(stop) - 1], stop)
+    #     time += t
+    
     
     # testCases.append([
     #     "Test Case 2",
     #     route, 
-    #     6, 
+    #     time, 
     #     NissanLeafBattery(4)
     # ])
 
@@ -63,7 +72,7 @@ def GetTestCases():
         "",
         route, 
         time, 
-        NissanLeafBattery(20)
+        NissanLeafBattery(40)
     ])
 
 

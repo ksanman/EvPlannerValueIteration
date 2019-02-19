@@ -93,7 +93,7 @@ class EvTripScheduleEnvironment:
         elif action == ActionSpace.Charge:
             nextStop = stop
             nextTime = min(time + 1, self.MaxTime - 1)
-            nextBattery = min(battery + self.Battery.Charge(nextTime - time, self.Route[stop].Current), self.MaxBattery - 1)
+            nextBattery = min(battery + self.Battery.Charge(nextTime - time, self.Route[stop].Voltage, self.Route[stop].Current), self.MaxBattery - 1)
 
             # Set the time reward
             reward += self.ComputeReward((nextTime, self.MaxTime), self.RewardFunctions.ComputeTimeReward)

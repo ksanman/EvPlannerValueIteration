@@ -76,7 +76,7 @@ class Scheduler:
         previousStop = stops[stops.index(stop) - 1]
         distance, time = self.GetDistanceAndTime(previousStop, stop)
         energyExpended = battery.Discharge(time)
-        return Charger(energyExpended,time, distance, stop.Name, stop.Current)
+        return Charger(energyExpended,time, distance, stop.Name, stop.Voltage, stop.Current)
 
     def GetDistanceAndTime(self, point1, point2):
         """ Return the distance and time to travel the distance. 
