@@ -12,7 +12,12 @@ from rewards import Rewards
 
 class EvTripScheduleEnvironment:
     """ Represents the Trip Schedule. The schedule is a list of possible charging stations along a route, the car battery, and the time to make the trip. 
-    The maximum time allocated to make the trip is 20% of the expected time.
+        
+        Keyword arguments:
+
+        route -- A list of possible charging stops for the trip
+        expectedTripTime -- The expected amount of time to make the trip. The maximum time allocated to make the trip is 20% of the expected time.
+        battery -- A model of the car battery used for charging and discharging calculations. 
     """
     def __init__(self, route, expectedTripTime, battery):
         # Define the environment variables here. 
@@ -48,6 +53,8 @@ class EvTripScheduleEnvironment:
         self.InitializeEnvironment()
     
     def InitializeEnvironment(self):
+        """ Creates a probability table for every state and action, computing all of the possible outcomes and rewards. 
+        """
         for stop in range(self.Stops):
             for time in range(self.MaxTime):
                 for battery in range(self.MaxBattery):
@@ -65,7 +72,18 @@ class EvTripScheduleEnvironment:
         self.Seed()
         self.Reset()
 
-    def PopulatePTable(self, state,  stop, time, battery, action):
+    def PopulatePTable(self, state, stop, time, battery, action):
+        """ Using the given state, stop, time, battery level, and action, calculate the next state and reward then
+            place it in the P table. 
+
+            Keyword arguments:
+
+            state -- An enumeration of the current state. 
+            stop -- The current stop number.
+            time -- The current time block. 
+            battery -- The current battery level
+            action -- An enumeration of the action to take. 
+        """
         reward = 0.0
         done = False
 
@@ -114,6 +132,8 @@ class EvTripScheduleEnvironment:
         self.P[state][action].append((1.0, newState, reward, done))
 
     def InitializeActionSpace(self):
+        """ Initializes the action space for every state in the schedule model. 
+        """
         actionSpace = [[[ None for _ in range(self.MaxBattery)] for _ in range(self.MaxTime)] for _ in range(self.Stops)]
 
         for stop in range(self.Stops):
@@ -138,6 +158,15 @@ class EvTripScheduleEnvironment:
         return self.ActionSpace[stop][time][battery]      
 
     def Encode(self, stop, time, battery):
+        """ Encodes a given state into a single index for the master state list. 
+
+            Keyword arguments:
+
+            stop -- The current stop index
+            time -- The current time block
+            battery -- The current battery level. 
+        """
+
         i = stop
         i *= self.MaxTime
         i += time
@@ -146,6 +175,8 @@ class EvTripScheduleEnvironment:
         return i
 
     def Decode(self, i):
+        """ Decodes the give state index to reveal the states stop index, time block, and battery level. 
+        """
         out = []
         out.append(i % self.MaxBattery)
         i = i // self.MaxBattery
@@ -156,16 +187,26 @@ class EvTripScheduleEnvironment:
         return reversed(out)
 
     def Seed(self, seed=None):
+        """ Initializes the random number generator with the given seed. 
+
+            Keyword arguments:
+
+            seed -- The seed with which to intialize the random number generator. 
+        """
         randomizer = Randomizer()
         self.Randomizer, seed = randomizer.intialize(seed)
         return [seed]
 
-    def Reset(self, random=False):
+    def Reset(self, isRandom=False):
         """ Resets the environment state to an intial state. 
             If the random value is false, then the state at the first stop, first time step, and full battery will be selected. 
+
+            Keyword arguments:
+            isRandom -- An argyment to determine if Reset should return a random intial state or a state
+                        with the first stop, first time block, and full battery level. 
         """
 
-        if random:
+        if isRandom:
             self.State = self.SampleFromInitialState(self.InitialStateDistribution)
         else:
             self.State = self.Encode(0,0,self.MaxBattery - 1)
@@ -173,12 +214,18 @@ class EvTripScheduleEnvironment:
         return self.State
     
     def SampleFromInitialState(self, probability_array):
+        """ Takes a probablisitic sample from the given array. 
+        """
         probability_array = np.asarray(probability_array)
         cumsum_probability_array = np.cumsum(probability_array)
         return (cumsum_probability_array > self.Randomizer.rand()).argmax()
 
     def Step(self, action):
         """ Move the state of the environment forward one time step with the given action. 
+
+            Keyword arguments:
+
+            action -- The action to perform. 
         """
         transitions = self.P[self.State][action]
         i = self.SampleFromInitialState([t[0] for t in transitions])
@@ -188,4 +235,6 @@ class EvTripScheduleEnvironment:
         return (state, reward, done, {"prob" : probability})
 
     def ComputeReward(self, args, rewardFunction):
+        """ Computes the reward of the given argments using a reward function library. 
+        """
         return rewardFunction(*args)

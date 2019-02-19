@@ -23,7 +23,7 @@ class StartActionSpace(ActionSpace):
 
 class ChargerActionSpace(ActionSpace):
     def __init__(self):
-        """ The Action Space for the charger states
+        """ The Action Space for the charging states
         """
         super(ChargerActionSpace, self).__init__([ActionSpace.Drive, ActionSpace.Charge])
 

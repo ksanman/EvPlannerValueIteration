@@ -10,6 +10,8 @@ class Stop(object):
 
             expendedEnergy -- The energy required to travel from the previous stop to the current stop. 
             tripTime -- The duration of the trip from the previous stop to the current stop. 
+            distance -- The distance from the previous stop to the current stop
+            name -- The name of the current stop (Address)
         """
 
         self.ExpendedEnergy = expendedEnergy
@@ -20,7 +22,11 @@ class Stop(object):
 class Start(Stop):
     def __init__(self, name):
         """ Represents the starting point of the route. 
-        There are no properties for a starting point as there is no previous stop. 
+            There are no properties for a starting point as there is no previous stop. 
+
+            Keyword arguments:
+
+            name -- The name of the current stop (Address)
         """
         super(Start, self).__init__(0, 0, 0, name)
 
@@ -32,6 +38,10 @@ class Charger(Stop):
 
             expendedEnergy -- The energy required to travel from the previous stop to the current stop. 
             tripTime -- The duration of the trip from the previous stop to the current stop. 
+            distance -- The distance from the previous stop to the current stop
+            name -- The name of the current stop (Address)
+            voltage -- The voltage of the charging station
+            current -- The current (in amps) that the charging station delivers. 
         """
         self.Current = current
         self.Voltage = voltage
@@ -45,6 +55,8 @@ class Destination(Stop):
 
             expendedEnergy -- The energy required to travel from the previous stop to the current stop. 
             tripTime -- The duration of the trip from the previous stop to the current stop.
+            distance -- The distance from the previous stop to the current stop
+            name -- The name of the current stop (Address)
             hasCharger -- Indicates whether or not the destination has a charging station or not.  
         """
         self.HasCharger = hasCharger
