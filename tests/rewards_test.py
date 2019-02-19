@@ -1,4 +1,4 @@
-from rewards import Rewards
+from context import Rewards
 import unittest
 
 class Test_Rewards(unittest.TestCase):

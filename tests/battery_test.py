@@ -1,4 +1,4 @@
-from battery import Battery
+from context import Battery
 import unittest
 
 class TestBattery(unittest.TestCase):
@@ -20,8 +20,9 @@ class TestBattery(unittest.TestCase):
         time = 1
         chargerCurrent = 100
         chargerVoltage = 400
+        load = (chargerCurrent * chargerVoltage) / 1000
         actualCharge = 10
-        testCharge = self.Battery.Charge(time, chargerVoltage, chargerCurrent)
+        testCharge = self.Battery.Charge(time, load)
         self.assertEqual(actualCharge, testCharge)
 
 if __name__ == '__main__':

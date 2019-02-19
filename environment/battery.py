@@ -1,5 +1,3 @@
-from decimal import Decimal, ROUND_HALF_UP
-
 class Battery(object):
     KwhToWattHourConversionFactor = 1000
     LionBatteryEfficiency = .90
@@ -34,7 +32,7 @@ class Battery(object):
         return -currentCharge
 
 
-    def Charge(self, time, chargerVoltage, chargerAmps):
+    def Charge(self, time, load):
         """ Calculates the Charge in a battery after chargeing for a period of time
 
             Formula:
@@ -46,17 +44,16 @@ class Battery(object):
 
             Keyword arguments:
 
-            currentCharge -- The current charge in the battery
             time -- The duration of charging.
+            load -- The load the charger outputs to the battery. 
         """
 
         if type(time) != int:
             raise Exception("Time must be represented as an integer value!")
 
-        P = (chargerVoltage * chargerAmps) / 1000
+        P = load
         t = self.ConvertToHours(time)
         c = (t * P)
-        #kwh = int(Decimal(self.AhToKwh(charge)).quantize(Decimal('0'), rounding=ROUND_HALF_UP))
         return c
 
     def ConvertToHours(self, timeBlock):

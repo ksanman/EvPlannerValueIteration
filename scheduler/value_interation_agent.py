@@ -318,7 +318,7 @@ class ValueIterationAgent:
             if not os.path.exists("temp"):
                 os.mkdir('temp/')
 
-            figure.savefig('temp/' + routeName + '_BatteryChargeVsTime.png', dpi=figure.dpi)
+            figure.savefig('temp/' + routeName + '_TimeVsDistance.png', dpi=figure.dpi)
 
     def PlotBatteryInfo(self, batteryInfo, routeName):
         """ Plots the battery level as a funtion of battery level and time. 

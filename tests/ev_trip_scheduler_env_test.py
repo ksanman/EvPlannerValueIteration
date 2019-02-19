@@ -1,15 +1,12 @@
 import unittest
-from stop import Start, Charger, Destination
-from battery import NissanLeafBattery
-
-from ev_trip_scheduler_env import EvTripScheduleEnvironment
+from context import Start, Charger, Destination, NissanLeafBattery, EvTripScheduleEnvironment, AddressInfo, Rewards
 
 
 class EvTripScheduleEnvironmentTest(unittest.TestCase):
     def setUp(self):
-        route = [Start("Start"), Charger(-1,1,1,"Charger"), Destination(-1,1, 1, "Destination", True)]
+        route = [Start("Start", AddressInfo()), Charger(-1,1,1,"Charger",AddressInfo(), 10), Destination(-1,1, 1, "Destination", AddressInfo(),True,10)]
         battery = NissanLeafBattery(3)
-        self.env = EvTripScheduleEnvironment(route, 3, battery)
+        self.env = EvTripScheduleEnvironment(route, 3, battery, Rewards())
 
     def testEncode(self):
         state = (1,1,1)

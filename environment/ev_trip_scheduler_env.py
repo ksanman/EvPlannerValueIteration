@@ -1,13 +1,12 @@
 import hashlib
 import random as _random
-from decimal import ROUND_HALF_UP, Decimal
+from utility import roundHalfUpToInt
 
 import numpy as np
 
 from action import (ActionSpace, ChargerActionSpace, DestinationActionSpace,
                     StartActionSpace)
 from randomizer import Randomizer
-from rewards import Rewards
 
 
 class EvTripScheduleEnvironment:
@@ -19,13 +18,13 @@ class EvTripScheduleEnvironment:
         expectedTripTime -- The expected amount of time to make the trip. The maximum time allocated to make the trip is 20% of the expected time.
         battery -- A model of the car battery used for charging and discharging calculations. 
     """
-    def __init__(self, route, expectedTripTime, battery):
+    def __init__(self, route, expectedTripTime, battery, rewardFunctions):
         # Define the environment variables here. 
         self.Route = route
         self.Stops = len(route) 
 
         self.ExpectedTime = expectedTripTime
-        self.MaxTime = self.ExpectedTime + int(Decimal(self.ExpectedTime * .20).quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+        self.MaxTime = self.ExpectedTime + roundHalfUpToInt(expectedTripTime)
 
         self.Battery = battery
         self.MaxBattery = battery.Capacity + 1
@@ -49,7 +48,7 @@ class EvTripScheduleEnvironment:
         # It contains the probability of event happeneing, s', the reward, and if s' is terminal. 
         # There are at most 2 actions for each state. 
         self.P = {state: {action: [] for action in range(2)} for state in range(self.NumberOfStates)}
-        self.RewardFunctions = Rewards()
+        self.RewardFunctions = rewardFunctions
         self.InitializeEnvironment()
     
     def InitializeEnvironment(self):
@@ -111,7 +110,7 @@ class EvTripScheduleEnvironment:
         elif action == ActionSpace.Charge:
             nextStop = stop
             nextTime = min(time + 1, self.MaxTime - 1)
-            nextBattery = min(battery + self.Battery.Charge(nextTime - time, self.Route[stop].Voltage, self.Route[stop].Current), self.MaxBattery - 1)
+            nextBattery = min(battery + self.Battery.Charge(nextTime - time, self.Route[stop].Load), self.MaxBattery - 1)
 
             # Set the time reward
             reward += self.ComputeReward((nextTime, self.MaxTime), self.RewardFunctions.ComputeTimeReward)
