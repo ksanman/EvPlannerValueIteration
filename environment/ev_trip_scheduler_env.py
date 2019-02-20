@@ -24,7 +24,7 @@ class EvTripScheduleEnvironment:
         self.Stops = len(route) 
 
         self.ExpectedTime = expectedTripTime
-        self.MaxTime = self.ExpectedTime + roundHalfUpToInt(expectedTripTime)
+        self.MaxTime = self.ExpectedTime + roundHalfUpToInt(expectedTripTime * .20)
 
         self.Battery = battery
         self.MaxBattery = battery.Capacity + 1

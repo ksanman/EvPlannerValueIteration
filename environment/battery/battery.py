@@ -1,8 +1,5 @@
 class Battery(object):
-    KwhToWattHourConversionFactor = 1000
-    LionBatteryEfficiency = .90
-
-    def __init__(self, capacity, systemVoltage):
+    def __init__(self, capacity):
         """The base class for a ev car battery
 
             Keyword arguments:
@@ -10,27 +7,6 @@ class Battery(object):
             capacity -- The capacity of the battery. 
         """
         self.Capacity = capacity
-        self.SystemVoltage = systemVoltage
-
-    def Discharge(self, time):
-        """ Calculates the discharge rate of the battery. 
-            
-            Keyword arguments:
-
-            time -- The duration of the discharge. 
-        """
-        
-        if type(time) != int:
-            raise Exception("Time must be represented as an integer value!")
-
-        # For every time block, decrement 1 from the battery charge. 
-        currentCharge = 0
-
-        for _ in range(time):
-            currentCharge += 1
-        
-        return -currentCharge
-
 
     def Charge(self, time, load):
         """ Calculates the Charge in a battery after chargeing for a period of time
@@ -65,16 +41,3 @@ class Battery(object):
         """
         hours = (timeBlock * 15) / 60.0
         return hours
-
-    def AhToKwh(self, ah):
-        """
-        Converts AH to KWH based on the system voltage.
-        """
-        return ((ah * self.SystemVoltage) / self.KwhToWattHourConversionFactor)
-
-class NissanLeafBattery(Battery):
-    def __init__(self, capacity):
-        """ Models the battery of a Nissan Leaf
-        """
-        nissanLeafSystemVoltage = 360
-        super(NissanLeafBattery, self).__init__(capacity, nissanLeafSystemVoltage)

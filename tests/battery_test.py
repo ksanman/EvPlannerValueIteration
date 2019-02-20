@@ -1,9 +1,9 @@
-from context import Battery
+from context import SimpleBattery
 import unittest
 
 class TestBattery(unittest.TestCase):
     def setUp(self):
-        self.Battery = Battery(10, 360)
+        self.Battery = SimpleBattery(10)
 
     def testDischarge(self):
         time = 1

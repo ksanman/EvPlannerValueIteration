@@ -1,4 +1,4 @@
-from context import Scheduler, NissanLeafBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, roundHalfUpToInt
+from context import Scheduler, SimpleBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, roundHalfUpToInt
 
 class ProgramTester:
     def __init__(self):
@@ -10,7 +10,7 @@ class ProgramTester:
         for c in stops[1:]:
             time += abs(c.AddressInfo.Latitude - stops[stops.index(c) - 1].AddressInfo.Latitude)
 
-        return self.TripBuilder.BuildTestTrip(name, stops, time,  NissanLeafBattery(battery))
+        return self.TripBuilder.BuildTestTrip(name, stops, time,  SimpleBattery(battery))
 
     def BuildSimpleTestCase(self, name, numberOfStops, time, battery, destinationHasCharger):
         route = [Point(AddressInfo(lat=0, long=0, title="Start"))]
@@ -49,15 +49,13 @@ class ProgramTester:
 
             battery is the battery level
         """
-
-
         testCases = []
 
         # Simple Test Case with Charger at end
         trip = self.BuildSimpleTestCase("Test Case 1", 3, 2, 4, True)
         testCases.append(trip)
 
-        # # Simple Test Case with Charger not at end
+        # Simple Test Case with Charger not at end
         trip = self.BuildSimpleTestCase("Test Case 2", 3, 2, 4, False)
         testCases.append(trip)
 

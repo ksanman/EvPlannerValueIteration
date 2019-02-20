@@ -1,17 +1,17 @@
 import unittest
-from context import Start, Charger, Destination, NissanLeafBattery, EvTripScheduleEnvironment, AddressInfo, Rewards
+from context import Start, Charger, Destination, SimpleBattery, EvTripScheduleEnvironment, AddressInfo, Rewards
 
 
 class EvTripScheduleEnvironmentTest(unittest.TestCase):
     def setUp(self):
         route = [Start("Start", AddressInfo()), Charger(-1,1,1,"Charger",AddressInfo(), 10), Destination(-1,1, 1, "Destination", AddressInfo(),True,10)]
-        battery = NissanLeafBattery(3)
+        battery = SimpleBattery(3)
         self.env = EvTripScheduleEnvironment(route, 3, battery, Rewards())
 
     def testEncode(self):
         state = (1,1,1)
         index = 21
-        testIndex = self.env.Encode(state[0], state[1], state[2])
+        testIndex = self.env.Encode(*state)
         self.assertEqual(index, testIndex)
 
     def testDecode(self):
