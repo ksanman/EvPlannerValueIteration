@@ -22,7 +22,7 @@
             "name": "Python: Module",
             "type": "python",
             "request": "launch",
-            "module": "tests/program_test",
+            "module": "tests/program_test.py",
             "console": "none"
         },
         {
