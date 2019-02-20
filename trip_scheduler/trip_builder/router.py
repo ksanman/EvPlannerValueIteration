@@ -1,4 +1,5 @@
-from location_objects import ChargerContext, Charger as DbCharger, Connection, AddressInfo, Point
+from ..location_objects import ChargerContext, Charger as DbCharger, Connection, AddressInfo, Point
+from ..utility import ConvertFromSecondsToFifteenMinuteBlock
 import random
 import requests
 import json
@@ -37,12 +38,12 @@ class Router:
             and the end coordinates in latitude, longitude pairs. 
         """
 
-        print('Getting route...')
+        print 'Getting route...'
         urlRequest = self.RouteRequestString.format(start.Longitude, start.Latitude, end.Longitude, end.Latitude)
         response = requests.get(urlRequest)
         content = response.content 
         jsonData = content.decode('utf8').replace("'", '"')
-        print('Route recieved.')
+        print 'Route recieved.'
         # Load the JSON to a Python list & dump it back out as formatted JSON
         data = json.loads(jsonData)
         return self.GetRouteFromJson(data)
@@ -63,7 +64,7 @@ class Router:
         Returns the route coordinates as well as all intersections along the route. 
         """
         route = data["routes"][0]
-        print('building route')
+        print 'Building Route'
         #get the intersections along the route
         intersections = self.GetIntersections(route)
 
@@ -106,15 +107,17 @@ class Router:
 
     def GetDistanceAndDurationBetweenPoints(self, point1, point2):
         """ Get the distance and travel time between two lat/long points by traveling on a road. 
+            Distance is returned in km, 
+            Time is returned in time blocks of 15 minutes. 
         """
-        request = self.DistanceRequestString.format(point1.Longitude, point1.Latitude, point2.Longitude, point2.Latitude)
+        request = self.DistanceRequestString.format(point1.AddressInfo.Longitude, point1.AddressInfo.Latitude, point2.AddressInfo.Longitude, point2.AddressInfo.Latitude)
         r = requests.get(request)
         c = r.content 
         my_json = c.decode('utf8').replace("'", '"')
         data = json.loads(my_json)
         route = data["routes"][0]
-        distance = float(route["distance"])
-        duration = float(route['duration'])
+        distance = float(route["distance"]) / 1000
+        duration = ConvertFromSecondsToFifteenMinuteBlock(float(route['duration']))
         return distance, duration
 
     def GetTestChargersInOrder(self, numberOfChargers):

@@ -1,6 +1,6 @@
 import hashlib
 import random as _random
-from utility import roundHalfUpToInt
+from ..utility import RoundHalfUpToInt
 
 import numpy as np
 
@@ -24,7 +24,7 @@ class EvTripScheduleEnvironment:
         self.Stops = len(route) 
 
         self.ExpectedTime = expectedTripTime
-        self.MaxTime = self.ExpectedTime + roundHalfUpToInt(expectedTripTime * .20)
+        self.MaxTime = self.ExpectedTime + RoundHalfUpToInt(expectedTripTime * .20)
 
         self.Battery = battery
         self.MaxBattery = battery.Capacity + 1

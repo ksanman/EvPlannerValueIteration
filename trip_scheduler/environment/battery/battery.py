@@ -1,3 +1,5 @@
+from ...utility import ConvertFromTimeBlockToHours
+
 class Battery(object):
     def __init__(self, capacity):
         """The base class for a ev car battery
@@ -28,16 +30,6 @@ class Battery(object):
             raise Exception("Time must be represented as an integer value!")
 
         P = load
-        t = self.ConvertToHours(time)
+        t = ConvertFromTimeBlockToHours(time)
         c = (t * P)
         return c
-
-    def ConvertToHours(self, timeBlock):
-        """ Converts a 15 minute time block to hours
-
-            Keyword arguments:
-
-            timeBlock -- A block of time. Each interger increment is 15 minutes. 
-        """
-        hours = (timeBlock * 15) / 60.0
-        return hours

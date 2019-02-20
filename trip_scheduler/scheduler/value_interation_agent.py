@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from collections import OrderedDict
-from utility import roundHalfUpToInt
-from environment.ev_trip_scheduler_env import EvTripScheduleEnvironment
+from ..utility import RoundHalfUpToInt
+from ..environment.ev_trip_scheduler_env import EvTripScheduleEnvironment
 
 
 class ValueIterationAgent:
@@ -247,10 +247,10 @@ class ValueIterationAgent:
         
         batteryAxes.plot(milage, battery)
 
-        yTickSpacing = roundHalfUpToInt((max(battery) + 1)/10) if max(battery) + 1 > 10 else 1
+        yTickSpacing = RoundHalfUpToInt((max(battery) + 1)/10) if max(battery) + 1 > 10 else 1
         plt.yticks(np.arange(0, max(battery) + 1, yTickSpacing))
 
-        xTickSpacing = roundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
+        xTickSpacing = RoundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
         plt.xticks(np.arange(0, max(milage) + 1, xTickSpacing))
 
         labels = batteryAxes.get_xticklabels()
@@ -300,9 +300,9 @@ class ValueIterationAgent:
         plt.ylim(ymax=self.Environment.MaxTime, ymin=0)
         plt.xlim(xmin=0)
         axes.plot(milage, time)
-        yTickSpacing = roundHalfUpToInt(self.Environment.MaxTime) if self.Environment.MaxTime + 1 > 10 else 1
+        yTickSpacing = RoundHalfUpToInt(self.Environment.MaxTime) if self.Environment.MaxTime + 1 > 10 else 1
         plt.yticks(np.arange(0, self.Environment.MaxTime + 1, yTickSpacing))
-        xTickSpacing = roundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
+        xTickSpacing = RoundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
         plt.xticks(np.arange(0, max(milage) + 1, xTickSpacing))
 
         labels = axes.get_xticklabels()
@@ -334,9 +334,9 @@ class ValueIterationAgent:
         batteryAxes.plot(time, battery)
         batteryAxes.axvline(expectedTime, linestyle='--')
 
-        yTickSpacing = roundHalfUpToInt((max(battery)) + 1/ 10) if max(battery) + 1 > 10 else 1
+        yTickSpacing = RoundHalfUpToInt((max(battery)) + 1/ 10) if max(battery) + 1 > 10 else 1
         plt.yticks(np.arange(0, max(battery) + 1, yTickSpacing))
-        xTickSpacing = roundHalfUpToInt(self.Environment.MaxTime + 1) if self.Environment.MaxTime + 1 > 10 else 1
+        xTickSpacing = RoundHalfUpToInt(self.Environment.MaxTime + 1) if self.Environment.MaxTime + 1 > 10 else 1
         plt.xticks(np.arange(0, self.Environment.MaxTime + 1, xTickSpacing))
 
         labels = batteryAxes.get_xticklabels()

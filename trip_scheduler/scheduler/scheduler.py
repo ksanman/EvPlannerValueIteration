@@ -1,4 +1,4 @@
-from environment import EvTripScheduleEnvironment
+from ..environment import EvTripScheduleEnvironment
 from value_interation_agent import ValueIterationAgent
 from rewards import Rewards
 

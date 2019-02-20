@@ -1,6 +1,6 @@
-from context import Scheduler, SimpleBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, roundHalfUpToInt
+from context import Scheduler, SimpleBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, RoundHalfUpToInt
 
-class ProgramDriver:
+class EvScheduleIntegrationTest:
     def __init__(self):
         self.RouteBuilder = Router()
         self.TripBuilder = TripBuilder()
@@ -35,7 +35,7 @@ class ProgramDriver:
 
         route.extend(chargers)
 
-        return self.BuildTrip(name, route, roundHalfUpToInt(time * 1.25), battery)
+        return self.BuildTrip(name, route, RoundHalfUpToInt(time * 1.25), battery)
 
     def GetTestCases(self):
         """ Method used to return test cases for testing the optimizer. 
@@ -78,5 +78,5 @@ class ProgramDriver:
             print schedule
 
 if __name__ == '__main__':
-    tester = ProgramDriver()
+    tester = EvScheduleIntegrationTest()
     tester.Run()
