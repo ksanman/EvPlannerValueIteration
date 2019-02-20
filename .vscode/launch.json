@@ -19,14 +19,14 @@
             "console": "none"
         },
         {
-            "name": "Python: Program Test",
+            "name": "Python: Simple Case Integration Test",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/tests/program_test.py",
             "console": "none"
         },
         {
-            "name": "Python: TripScheduler",
+            "name": "Python: St George Integration Test",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/tests/trip_schedule_integration_test.py",
