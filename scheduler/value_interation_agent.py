@@ -247,10 +247,10 @@ class ValueIterationAgent:
         
         batteryAxes.plot(milage, battery)
 
-        yTickSpacing = roundHalfUpToInt(battery) if max(battery) + 1 > 10 else 1
+        yTickSpacing = roundHalfUpToInt((max(battery) + 1)/10) if max(battery) + 1 > 10 else 1
         plt.yticks(np.arange(0, max(battery) + 1, yTickSpacing))
 
-        xTickSpacing = roundHalfUpToInt(milage) if max(milage) + 1 > 10 else 1
+        xTickSpacing = roundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
         plt.xticks(np.arange(0, max(milage) + 1, xTickSpacing))
 
         labels = batteryAxes.get_xticklabels()
@@ -302,7 +302,7 @@ class ValueIterationAgent:
         axes.plot(milage, time)
         yTickSpacing = roundHalfUpToInt(self.Environment.MaxTime) if self.Environment.MaxTime + 1 > 10 else 1
         plt.yticks(np.arange(0, self.Environment.MaxTime + 1, yTickSpacing))
-        xTickSpacing = roundHalfUpToInt(milage) if max(milage) + 1 > 10 else 1
+        xTickSpacing = roundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
         plt.xticks(np.arange(0, max(milage) + 1, xTickSpacing))
 
         labels = axes.get_xticklabels()
@@ -334,7 +334,7 @@ class ValueIterationAgent:
         batteryAxes.plot(time, battery)
         batteryAxes.axvline(expectedTime, linestyle='--')
 
-        yTickSpacing = roundHalfUpToInt(battery) if max(battery) + 1 > 10 else 1
+        yTickSpacing = roundHalfUpToInt((max(battery)) + 1/ 10) if max(battery) + 1 > 10 else 1
         plt.yticks(np.arange(0, max(battery) + 1, yTickSpacing))
         xTickSpacing = roundHalfUpToInt(self.Environment.MaxTime + 1) if self.Environment.MaxTime + 1 > 10 else 1
         plt.xticks(np.arange(0, self.Environment.MaxTime + 1, xTickSpacing))

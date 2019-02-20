@@ -1,79 +1,84 @@
-from context import Scheduler, NissanLeafBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder
+from context import Scheduler, NissanLeafBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, roundHalfUpToInt
 
-def GetTestCases():
-    """ Method used to return test cases for testing the optimizer. 
+class ProgramTester:
+    def __init__(self):
+        self.RouteBuilder = Router()
+        self.TripBuilder = TripBuilder()
 
-        Test cases should be in the following format:
-        [Name, [stops], tripTime, battery]
+    def BuildTrip(self, name, stops, time, battery):
+        time = time
+        for c in stops[1:]:
+            time += abs(c.AddressInfo.Latitude - stops[stops.index(c) - 1].AddressInfo.Latitude)
 
-        stops are in the form [energyExpendedFromPreviousStop, timeFromPreviousStop]
-            The first element in the stop list is ignored for now, but will contain coordinates of the start location later. 
-            Destination Locations must include the 'isDestinationCharger' flag. ex: [energyExpendedFromPreviousStop, timeFromPreviousStop, isDestinationCharger]
+        return self.TripBuilder.BuildTestTrip(name, stops, time,  NissanLeafBattery(battery))
 
-        trip time is an integer. 
+    def BuildSimpleTestCase(self, name, numberOfStops, time, battery, destinationHasCharger):
+        route = [Point(AddressInfo(lat=0, long=0, title="Start"))]
+        if destinationHasCharger:
+            chargers = self.RouteBuilder.GetTestChargersInOrder(numberOfStops)
+        else:
+            chargers = self.RouteBuilder.GetTestChargersInOrder(numberOfStops - 1)
+            chargers.append(Point(AddressInfo(lat=1,long=1, title="End")))
 
-        battery is a derivative of the Battery class from battery.py
-    """
-    routeBuilder = Router()
-    tripBuilder = TripBuilder()
+        route.extend(chargers)
 
-    testCases = []
+        return self.BuildTrip(name, route, time, battery)
 
-    # Simple Test Case with Charger at end
-    route = [Point(AddressInfo(lat=0, long=0, title="Start"))]
-    chargers = routeBuilder.GetTestChargersInOrder(3)
-    route.extend(chargers)
+    def BuildRandomTestCase(self, name, numberOfStops, time, battery, destinationHasCharger):
+        route = [Point(AddressInfo(lat=0, long=0, title="Start"))]
 
-    time = 2
-    for c in route[1:]:
-        time += c.AddressInfo.Latitude - route[route.index(c) - 1].AddressInfo.Latitude
+        if destinationHasCharger:
+            chargers = self.RouteBuilder.GetTestChargersInOrder(numberOfStops)
+        else:
+            chargers = self.RouteBuilder.GetTestChargersInOrder(numberOfStops - 1)
+            chargers.append(Point(AddressInfo(lat=1,long=1, title="End")))
 
-    trip = tripBuilder.BuildTestTrip("Test Case 1", route, time,  NissanLeafBattery(4))
+        route.extend(chargers)
 
-    testCases.append(trip)
+        return self.BuildTrip(name, route, roundHalfUpToInt(time * 1.25), battery)
 
-    # # Simple Test Case with Charger not at end
-    route = [Point(AddressInfo(lat=0, long=0, title="Start"))]
-    chargers = routeBuilder.GetTestChargersInOrder(2)
-    route.extend(chargers)
-    route.append(Point(AddressInfo(lat=3,long=3, title="End")))
+    def GetTestCases(self):
+        """ Method used to return test cases for testing the optimizer. 
 
-    time = 2
-    for c in route[1:]:
-        time += c.AddressInfo.Latitude - route[route.index(c) - 1].AddressInfo.Latitude
+            Test cases should be in the following format:
+            [Name, [stops], tripTime, battery]
 
-    trip = tripBuilder.BuildTestTrip("Test Case 2", route, time,  NissanLeafBattery(4))
+            Stops is a list of possible stop along a route including the start and destination. 
 
-    testCases.append(trip)
+            trip time is an integer. 
 
-    # Simple Test Case with Random Chargers
-    # chargers = routeBuilder.GetTestRandomSample(10)
-    # route = [Point("Start", 0, 0)]
-    # route.extend(chargers)
-    # time = 0
-    # for stop in route[1:]:
-    #     _, t = GetDistanceAndTime(route[route.index(stop) - 1], stop)
-    #     time += t
-    
-    # time = int(Decimal(time * 1.25).quantize(Decimal('0'), rounding=ROUND_HALF_UP))
-    
-    # testCases.append([
-    #     "",
-    #     route, 
-    #     time, 
-    #     NissanLeafBattery(40)
-    # ])
+            battery is the battery level
+        """
 
 
-    return testCases
+        testCases = []
 
-def run():
-    testCases = GetTestCases()
-    scheduler = Scheduler()
-    schedules = scheduler.ScheduleRoutes(testCases, True)
-    
-    for schedule in schedules:
-        print schedule
+        # Simple Test Case with Charger at end
+        trip = self.BuildSimpleTestCase("Test Case 1", 3, 2, 4, True)
+        testCases.append(trip)
+
+        # # Simple Test Case with Charger not at end
+        trip = self.BuildSimpleTestCase("Test Case 2", 3, 2, 4, False)
+        testCases.append(trip)
+
+        # Simple Test Case with Random Chargers and Charger at end
+        trip = self.BuildRandomTestCase("Random Case with Destination Charger", 10, 0, 40, True)
+        testCases.append(trip)
+
+        # Simple Test Case with Random Chargers and Charger not at end
+        trip = self.BuildRandomTestCase("Random Case without Destination Charger", 10, 0, 40, False)
+        testCases.append(trip)
+
+        return testCases
+
+    def Run(self):
+        testCases = self.GetTestCases()
+        scheduler = Scheduler()
+        schedules = scheduler.ScheduleRoutes(testCases, True)
+        
+        for schedule in schedules:
+            print schedule
 
 if __name__ == '__main__':
-    run()
+    tester = ProgramTester()
+    tester.Run()
