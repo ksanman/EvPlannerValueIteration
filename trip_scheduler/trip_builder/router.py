@@ -8,11 +8,39 @@ import polyline
 class Router:
     def __init__(self):
         self.RouteRequestString = 'http://router.project-osrm.org/route/v1/driving/{0},{1};{2},{3}?overview=full&steps=true'
-        self.DistanceRequestString = 'http://router.project-osrm.org/route/v1/driving/{0},{1};{2},{3}?overview=simplified'
-        self.TestChargerList = []
+        self.DistanceRequestString = 'http://router.project-osrm.org/route/v1/driving/{0},{1};{2},{3}?overview=simplified'       
         self.ChargerContext = ChargerContext()
-        for c in range(1, 20):
-            self.TestChargerList.append(DbCharger(AddressInfo(ID=c, lat=c, long=c, title="Charger{0}".format(c)), [Connection(amps=63,voltage=400)]))
+
+        self.ShortTestChargerList = [
+            DbCharger(AddressInfo(ID=1, lat=1, long=1, title="Charger{0}".format(1)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=2, lat=2, long=2, title="Charger{0}".format(2)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=3, lat=3, long=3, title="Charger{0}".format(3)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=4, lat=4, long=4, title="Charger{0}".format(4)), [Connection(amps=63,voltage=400)]),
+        ]
+
+        self.LongTestChargerList = [
+            DbCharger(AddressInfo(ID=1, lat=1, long=1, title="Charger{0}".format(1)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=2, lat=2, long=2, title="Charger{0}".format(2)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=3, lat=3, long=3, title="Charger{0}".format(3)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=4, lat=4, long=4, title="Charger{0}".format(4)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=5, lat=5, long=5, title="Charger{0}".format(5)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=6, lat=2, long=2, title="Charger{0}".format(6)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=7, lat=3, long=3, title="Charger{0}".format(7)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=8, lat=4, long=4, title="Charger{0}".format(8)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=9, lat=10, long=1, title="Charger{0}".format(9)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=10, lat=9, long=2, title="Charger{0}".format(10)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=11, lat=8, long=3, title="Charger{0}".format(11)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=12, lat=6, long=4, title="Charger{0}".format(12)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=13, lat=6, long=1, title="Charger{0}".format(13)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=14, lat=5, long=2, title="Charger{0}".format(14)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=15, lat=9, long=3, title="Charger{0}".format(15)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=16, lat=4, long=4, title="Charger{0}".format(16)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=17, lat=8, long=4, title="Charger{0}".format(17)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=18, lat=6, long=1, title="Charger{0}".format(18)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=19, lat=2, long=2, title="Charger{0}".format(19)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=20, lat=1, long=3, title="Charger{0}".format(20)), [Connection(amps=63,voltage=400)]),
+            DbCharger(AddressInfo(ID=21, lat=1, long=4, title="Charger{0}".format(21)), [Connection(amps=63,voltage=400)])
+        ]
 
     def BuildRoute(self, name, startPoint, endPoint, searchDistance):
         """ Given a start point and an end point, this method will build a route as a list of possible charging stops from the start point to the
@@ -121,7 +149,7 @@ class Router:
         return distance, duration
 
     def GetTestChargersInOrder(self, numberOfChargers):
-        return self.TestChargerList[:numberOfChargers]
-
-    def GetTestRandomSample(self, numberOfChargers):
-        return random.sample(self.TestChargerList, numberOfChargers)
+        if numberOfChargers < len(self.ShortTestChargerList):
+            return self.ShortTestChargerList[:numberOfChargers]
+        else:
+            return self.LongTestChargerList[:numberOfChargers]
