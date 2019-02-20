@@ -1,8 +1,8 @@
-from context import TripScheduler, NissanLeafBattery, RoundHalfUpToInt
+from context import TripScheduler, NissanLeafBattery, RoundHalfUpToInt, Rewards
 from time import time
 
 def run():
-    tripScheduler = TripScheduler()
+    tripScheduler = TripScheduler(Rewards())
     stGeorgeTrip = 'data/stgeorge_route.txt'
     stGeorgeChargers = 'data/stgeorge_chargers.txt'
     battery = NissanLeafBattery(40)
