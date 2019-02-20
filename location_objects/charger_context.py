@@ -10,8 +10,8 @@ from media_item import MediaItem
 import json
 
 class ChargerContext:
-    def __init__(self,  nearestChargersFilePath='data/stgeorge_chargers.txt'):
-        self.NearestChargersFilePath = nearestChargersFilePath
+    def __init__(self):
+        pass
 
     def GetChargersFromJson(self, jsonData):
         """
@@ -22,11 +22,11 @@ class ChargerContext:
             chargers.append(self.ObjectDecoder(data))
         return chargers
 
-    def GetChargersFromFile(self):
+    def GetChargersFromFile(self, filePath):
         """
         Load the nearest chargers from a file. 
         """
-        with open(self.NearestChargersFilePath, 'r') as f:
+        with open(filePath, 'r') as f:
             data = json.loads(f.read())
 
         return self.GetChargersFromJson(data)

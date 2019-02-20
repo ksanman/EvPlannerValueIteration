@@ -24,7 +24,7 @@ class Router:
             searchDistance -- The radius to search from the route for charging locations.
         """
         osrmRoute = self.GetRouteFromOsrm(startPoint, endPoint)
-        nearestChargers = self.GetNearestChargers(osrmRoute['route'], searchDistance)
+        nearestChargers = self.GetNearestChargersFromDatabase(osrmRoute['route'], searchDistance)
 
         route = [startPoint]
         route.extend(nearestChargers)
@@ -33,19 +33,28 @@ class Router:
         return {'ScheduleRoute': route, 'Polyline': osrmRoute['route'], 'ChargingPoints': nearestChargers}
 
     def GetRouteFromOsrm(self, start, end):
-        """
-        Submits a request to OSRM to get a route data. All that are needed are the start coordinates
-        and the end coordinates in latitude, longitude pairs. 
+        """ Submits a request to OSRM to get a route data. All that are needed are the start coordinates
+            and the end coordinates in latitude, longitude pairs. 
         """
 
         print('Getting route...')
-        url_request = self.RouteRequestString.format(start.Longitude, start.Latitude, end.Longitude, end.Latitude)
-        r = requests.get(url_request)
-        c = r.content 
-        my_json = c.decode('utf8').replace("'", '"')
+        urlRequest = self.RouteRequestString.format(start.Longitude, start.Latitude, end.Longitude, end.Latitude)
+        response = requests.get(urlRequest)
+        content = response.content 
+        jsonData = content.decode('utf8').replace("'", '"')
         print('Route recieved.')
         # Load the JSON to a Python list & dump it back out as formatted JSON
-        data = json.loads(my_json)
+        data = json.loads(jsonData)
+        return self.GetRouteFromJson(data)
+
+    def GetRouteFromFile(self, filePath):
+        """ Loads a .json file containing a OSRM route response and constructs a route from the data. 
+        """
+        with open(filePath, 'r') as file:
+            content = file.read()
+
+        jsonData = content.decode('utf8').replace("'", '"')
+        data = json.loads(jsonData)
         return self.GetRouteFromJson(data)
 
     def GetRouteFromJson(self, data):
@@ -74,15 +83,25 @@ class Router:
 
         return intersections
 
-    def GetNearestChargers(self, route, searchDistance):
-        """ Gets the charger objects within the search distance of the route.
-
+    def GetNearestChargersFromDatabase(self, route, searchDistance):
+        """ Gets the charger objects within the search distance of the route from the database.
+             
             Keyword arguments:
 
             route -- A list of lat/long pairs that resemble the route. 
             searchDistance -- The radius to search from the route for charging locations.
+        """
+        raise Exception("Not Implemented")
+
+
+    def GetNearestChargersFromFile(self, filePath):
+        """ Gets the charger objects for a route from a file.
+
+            Keyword arguments:
+
+            filePath -- the location of the file containing the charger contents. 
         """ 
-        chargers = self.ChargerContext.GetChargersFromFile()
+        chargers = self.ChargerContext.GetChargersFromFile(filePath)
         return chargers
 
     def GetDistanceAndDurationBetweenPoints(self, point1, point2):

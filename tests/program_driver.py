@@ -1,6 +1,6 @@
 from context import Scheduler, SimpleBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, roundHalfUpToInt
 
-class ProgramTester:
+class ProgramDriver:
     def __init__(self):
         self.RouteBuilder = Router()
         self.TripBuilder = TripBuilder()
@@ -78,5 +78,5 @@ class ProgramTester:
             print schedule
 
 if __name__ == '__main__':
-    tester = ProgramTester()
+    tester = ProgramDriver()
     tester.Run()
