@@ -1,4 +1,4 @@
-from ...utility import ConvertFromTimeBlockToHours
+from ..utility import ConvertFromTimeBlockToHours
 
 class Battery(object):
     def __init__(self, capacity):

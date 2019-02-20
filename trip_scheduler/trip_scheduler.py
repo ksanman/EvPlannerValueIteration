@@ -1,15 +1,17 @@
 from trip_builder import Router
 from trip_builder import TripBuilder
 from location_objects import Point, Charger, AddressInfo, Connection
-from scheduler import Scheduler
+from optimizer import Optimizer
 
 class TripScheduler:
     """ Main interface with the EV trip scheduler. 
     """
-    def __init__(self):
+    def __init__(self, rewards):
+        """ Creates a new trip scheduler that schedules an EV trip based on the passed in rewards functions. 
+        """
         self.Router = Router()
         self.TripBuilder = TripBuilder()
-        self.Scheduler = Scheduler()
+        self.Optimizer = Optimizer(rewards)
 
     def ScheduleRoute(self, name, startPoint, endPoint, expectedTripTime, carBattery):
         """ Schedules a single route given a start point, end point, expected trip time, and a car battery. 
@@ -55,7 +57,7 @@ class TripScheduler:
         
         trip = self.TripBuilder.BuildTrip(name, route, expectedTripTime, carBattery)
         
-        return self.Scheduler.ScheduleRoutes([trip])
+        return self.Optimizer.OptimizeRoutes([trip])
 
 
     def ScheduleRoutes(self, routes):

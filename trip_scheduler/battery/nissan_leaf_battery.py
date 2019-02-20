@@ -1,5 +1,5 @@
 from battery import Battery
-from ...utility import RoundHalfUpToInt, ConvertFromTimeBlockToHours
+from ..utility import RoundHalfUpToInt, ConvertFromTimeBlockToHours
 
 class NissanLeafBattery(Battery):
     kWhPkm = 0.212

@@ -1,12 +1,13 @@
 import hashlib
 import random as _random
-from ..utility import RoundHalfUpToInt
 
 import numpy as np
 
 from action import (ActionSpace, ChargerActionSpace, DestinationActionSpace,
                     StartActionSpace)
 from randomizer import Randomizer
+
+from ..utility import RoundHalfUpToInt
 
 
 class EvTripScheduleEnvironment:

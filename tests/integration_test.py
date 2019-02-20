@@ -1,4 +1,4 @@
-from context import Scheduler, SimpleBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, RoundHalfUpToInt
+from context import Optimizer, SimpleBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, RoundHalfUpToInt
 
 class EvScheduleIntegrationTest:
     def __init__(self):
@@ -71,8 +71,8 @@ class EvScheduleIntegrationTest:
 
     def Run(self):
         testCases = self.GetTestCases()
-        scheduler = Scheduler()
-        schedules = scheduler.ScheduleRoutes(testCases, True)
+        scheduler = Optimizer()
+        schedules = scheduler.OptimizeRoutes(testCases, True)
         
         for schedule in schedules:
             print schedule

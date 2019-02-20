@@ -1,10 +1,10 @@
-from context import Rewards
+from context import Rewards, SimpleRewards
 import unittest
 
 class Test_Rewards(unittest.TestCase):
     def setUp(self):
-        self.RewardFunctions = Rewards()
-    
+        self.RewardFunctions = SimpleRewards()
+
     def test_ComputeTimeReward(self):
         testTimes = [
             [0,4,4],

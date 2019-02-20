@@ -1,12 +1,19 @@
 from ..environment import EvTripScheduleEnvironment
 from value_interation_agent import ValueIterationAgent
-from rewards import Rewards
 
-class Scheduler:
+class Optimizer:
     """ Provides methods to schedule the charging locations several EV trip routes. 
     """
+    def __init__(self, rewardFunctions):
+        """ Initializes a new optimizer class with the passed in reward functions interface. 
 
-    def ScheduleRoutes(self, routes, isPrintStats=False):
+            Keyword arguments:
+
+            rewardFunctions -- the reward functions to use for optimization. 
+        """
+        self.Rewards = rewardFunctions
+
+    def OptimizeRoutes(self, routes, isPrintStats=False):
         """ Given a list of routes, find the optimal schedule for each on and return them. 
             
             Keywork arguments:
@@ -32,7 +39,7 @@ class Scheduler:
             isPrintStats -- Boolean value that triggers printing the optimizer output to the console. 
         """
 
-        environment = EvTripScheduleEnvironment(route, expectedTimeToDestination, battery, Rewards())
+        environment = EvTripScheduleEnvironment(route, expectedTimeToDestination, battery, self.Rewards)
 
         # Build the value table
         agent = ValueIterationAgent(environment)
