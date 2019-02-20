@@ -19,7 +19,7 @@ class TripBuilder:
         for stop in stops:
                 tripRoute.append(self.GetTestCharger(stop, route[route.index(stop) - 1], carBattery))
 
-        tripRoute.append(self.GetTestDestination(endPoint, route[route.index(stop) - 1], carBattery))
+        tripRoute.append(self.GetTestDestination(endPoint, route[-2], carBattery))
 
         # Package the trip object. 
         trip = Trip(name, tripRoute, expectedTripTime, carBattery)
@@ -38,7 +38,7 @@ class TripBuilder:
         for stop in stops:
                 tripRoute.append(self.GetCharger(stop, route[route.index(stop) - 1], carBattery))
 
-        tripRoute.append(self.GetDestination(endPoint, route[route.index(stop) - 1], carBattery))
+        tripRoute.append(self.GetDestination(endPoint, route[-2], carBattery))
 
         # Package the trip object. 
         trip = Trip(name, tripRoute, expectedTripTime, carBattery)

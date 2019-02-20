@@ -96,7 +96,7 @@ class EvTripScheduleEnvironment:
             nextBattery = max(battery + location.ExpendedEnergy, 0)
 
             # Set the time reward
-            reward += self.ComputeReward((nextTime, self.MaxTime), self.RewardFunctions.ComputeTimeReward)
+            reward += self.ComputeReward((nextTime, self.ExpectedTime), self.RewardFunctions.ComputeTimeReward)
 
             # If the new state is the terminal state
             if nextStop == self.Stops - 1:
@@ -114,7 +114,7 @@ class EvTripScheduleEnvironment:
             nextBattery = min(battery + self.Battery.Charge(nextTime - time, self.Route[stop].Load), self.MaxBattery - 1)
 
             # Set the time reward
-            reward += self.ComputeReward((nextTime, self.MaxTime), self.RewardFunctions.ComputeTimeReward)
+            reward += self.ComputeReward((nextTime, self.ExpectedTime), self.RewardFunctions.ComputeTimeReward)
             # Set the charging reward. The reward is negative for staying too long at a charger and overcharging the car. 
             reward += self.ComputeReward((nextBattery, self.MaxBattery - 1, nextBattery - battery), self.RewardFunctions.ComputeBatteryRewardForCharging)
 

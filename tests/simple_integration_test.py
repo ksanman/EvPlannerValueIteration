@@ -1,4 +1,4 @@
-from context import Optimizer, SimpleBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, RoundHalfUpToInt, SimpleRewards
+from context import Optimizer, LinearSimpleBattery, Router, Point, Start, Charger, Destination, AddressInfo, TripBuilder, RoundHalfUpToInt, SimpleRewards, RealisticSimpleBattery
 
 class EvScheduleIntegrationTest:
     def __init__(self):
@@ -10,7 +10,7 @@ class EvScheduleIntegrationTest:
         for c in stops[1:]:
             time += abs(c.AddressInfo.Latitude - stops[stops.index(c) - 1].AddressInfo.Latitude)
 
-        return self.TripBuilder.BuildTestTrip(name, stops, time,  SimpleBattery(battery))
+        return self.TripBuilder.BuildTestTrip(name, stops, time,  battery)
 
     def BuildSimpleTestCase(self, name, numberOfStops, time, battery, destinationHasCharger):
         route = [Point(AddressInfo(lat=0, long=0, title="Start"))]
@@ -52,19 +52,19 @@ class EvScheduleIntegrationTest:
         testCases = []
 
         # Simple Test Case with Charger at end
-        trip = self.BuildSimpleTestCase("Test Case 1", 3, 2, 4, True)
+        trip = self.BuildSimpleTestCase("Test Case 1", 3, 1, LinearSimpleBattery(3), True)
         testCases.append(trip)
 
         # Simple Test Case with Charger not at end
-        trip = self.BuildSimpleTestCase("Test Case 2", 3, 2, 4, False)
+        trip = self.BuildSimpleTestCase("Test Case 2", 3, 1, LinearSimpleBattery(3), False)
         testCases.append(trip)
 
         # Simple Test Case with Random Chargers and Charger at end
-        trip = self.BuildRandomTestCase("Random Case with Destination Charger", 10, 0, 40, True)
+        trip = self.BuildRandomTestCase("Random Case with Destination Charger", 10, 0, RealisticSimpleBattery(10), True)
         testCases.append(trip)
 
         # Simple Test Case with Random Chargers and Charger not at end
-        trip = self.BuildRandomTestCase("Random Case without Destination Charger", 10, 0, 40, False)
+        trip = self.BuildRandomTestCase("Random Case without Destination Charger", 10, 0, RealisticSimpleBattery(10), False)
         testCases.append(trip)
 
         return testCases

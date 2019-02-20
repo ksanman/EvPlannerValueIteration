@@ -1,11 +1,11 @@
 import unittest
-from context import Start, Charger, Destination, SimpleBattery, EvTripScheduleEnvironment, AddressInfo, Rewards
+from context import Start, Charger, Destination, LinearSimpleBattery, EvTripScheduleEnvironment, AddressInfo, Rewards
 
 
 class EvTripScheduleEnvironmentTest(unittest.TestCase):
     def setUp(self):
         route = [Start("Start", AddressInfo()), Charger(-1,1,1,"Charger",AddressInfo(), 10), Destination(-1,1, 1, "Destination", AddressInfo(),True,10)]
-        battery = SimpleBattery(3)
+        battery = LinearSimpleBattery(3)
         self.env = EvTripScheduleEnvironment(route, 3, battery, Rewards())
 
     def testEncode(self):

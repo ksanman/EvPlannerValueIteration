@@ -1,13 +1,11 @@
 from battery import Battery
-from ..utility import RoundHalfUpToInt, ConvertFromTimeBlockToHours
+from ..utility import ConvertFromTimeBlockToHours, RoundHalfUpToInt
 
-class NissanLeafBattery(Battery):
-    kWhPkm = 0.212
-    
+class LinearSimpleBattery(Battery):
     def __init__(self, capacity):
-        """ Models the battery of a Nissan Leaf
+        """Models a simple ev battery
         """
-        super(NissanLeafBattery, self).__init__(capacity)
+        super(LinearSimpleBattery, self).__init__(capacity)
 
     def Discharge(self, time, distance):
         """ Calculates the discharge rate of the battery. 
@@ -15,13 +13,19 @@ class NissanLeafBattery(Battery):
             Keyword arguments:
 
             time -- The duration of the discharge. 
+            distance -- The distance traveled.
         """
         
         if type(time) != int:
             raise Exception("Time must be represented as an integer value!")
 
-        batteryConsumed = distance * self.kWhPkm
-        return -batteryConsumed
+        # For every time block, decrement 1 from the battery charge. 
+        currentCharge = 0
+
+        for _ in range(time):
+            currentCharge += 1
+        
+        return -currentCharge
 
     def Charge(self, time, load):
         """ Calculates the Charge in a battery after chargeing for a period of time
@@ -42,7 +46,7 @@ class NissanLeafBattery(Battery):
         if type(time) != int:
             raise Exception("Time must be represented as an integer value!")
 
-        P = load
-        t = ConvertFromTimeBlockToHours(time)
-        c = RoundHalfUpToInt(t * P)
-        return c
+        charge = 0
+        for _ in range(time):
+            charge += 1
+        return charge

@@ -1,2 +1,3 @@
-from simple_battery import SimpleBattery
+from linear_simple_battery import LinearSimpleBattery
+from realistic_simple_battery import RealisticSimpleBattery
 from nissan_leaf_battery import NissanLeafBattery

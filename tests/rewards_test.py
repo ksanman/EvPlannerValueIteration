@@ -29,7 +29,7 @@ class Test_Rewards(unittest.TestCase):
 
     def test_ComputeBatteryRewardForDriving(self):
         testTimes = [
-            [0,10,-10],
+            [0,10,-100],
             [2,10,0],
             [10,10,0]
         ]
