@@ -2,4 +2,4 @@
 bash.exe.stackdump
 /.vscode
 temp/*
-*.settings.json
+**/*/settings.json
