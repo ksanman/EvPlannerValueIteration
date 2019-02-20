@@ -22,7 +22,7 @@
             "name": "Python: Simple Case Integration Test",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/tests/program_test.py",
+            "program": "${workspaceFolder}/tests/simple_integration_test.py",
             "console": "none"
         },
         {
