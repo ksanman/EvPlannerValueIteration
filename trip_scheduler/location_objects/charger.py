@@ -6,7 +6,7 @@ class Charger:
     """
     def __init__(self, addressInfo, connections, mediaItems = None, userComments = None, dataProviderID=None, dataQualityLevel = None, dateCreated=None,dateLastStatusUpdate=None,
                  dateLastVerified=None,generalComments=None,ID=None,isRecentlyVerified=None,numberOfPoints=None,operatorID=None,statusTypeID=None,submissionStatusTypeID=None,
-                 uuid = None, usageCost = None, usageTypeID= None):
+                 uuid = None, usageCost = None, usageTypeID= None, intersectionLatitude=None, intersectionLongitude=None):
         self.AddressInfo = addressInfo
         self.Connections = connections
         self.DataProviderID = dataProviderID
@@ -26,3 +26,5 @@ class Charger:
         self.UsageCost = usageCost
         self.UsageTypeID = usageTypeID
         self.UserComments = userComments
+        self.IntersectionLatitude = intersectionLatitude
+        self.IntersectionLongitude = intersectionLongitude

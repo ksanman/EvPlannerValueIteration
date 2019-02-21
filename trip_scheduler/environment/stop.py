@@ -3,7 +3,7 @@ File contains definitions for the different types of Stops that can be encounter
 """
 
 class Stop(object):
-    def __init__(self, expendedEnergy, tripTime, distance, name, addressInfo):
+    def __init__(self, expendedEnergy, tripTime, distance, name, addressInfo,distanceFromIntersection):
         """ Base representation of a stop along a vehicles route. 
 
             Keyword arguments:
@@ -13,6 +13,7 @@ class Stop(object):
             distance -- The distance from the previous stop to the current stop
             name -- The name of the current stop (Address)
             addressInfo -- Address information about the location. 
+            distanceFromIntersection -- The distance the location is from the route. 
         """
 
         self.ExpendedEnergy = expendedEnergy
@@ -20,6 +21,7 @@ class Stop(object):
         self.Distance = distance
         self.Name = name
         self.AddressInfo = addressInfo
+        self.DistanceFromIntersection = distanceFromIntersection
 
 class Start(Stop):
     def __init__(self, name, addressInfo):
@@ -31,10 +33,10 @@ class Start(Stop):
             name -- The name of the current stop (Address)
             addressInfo -- Address information about the location. 
         """
-        super(Start, self).__init__(0, 0, 0, name, addressInfo)
+        super(Start, self).__init__(0, 0, 0, name, addressInfo, 0)
 
 class Charger(Stop):
-    def __init__(self, expendedEnergy, tripTime, distance, name, addressInfo, load):
+    def __init__(self, expendedEnergy, tripTime, distance, name, addressInfo, distanceFromIntersection, load):
         """ Represents a charging station along a route. 
 
             Keyword arguments:
@@ -43,15 +45,15 @@ class Charger(Stop):
             tripTime -- The duration of the trip from the previous stop to the current stop. 
             distance -- The distance from the previous stop to the current stop
             name -- The name of the current stop (Address)
-            voltage -- The voltage of the charging station
             addressInfo -- Address information about the location.
-            current -- The current (in amps) that the charging station delivers. 
+            distanceFromIntersection -- The distance the location is from the route.  
+            load -- The power load delivered by the charger. 
         """
         self.Load = load
-        super(Charger, self).__init__(expendedEnergy, tripTime, distance, name, addressInfo)
+        super(Charger, self).__init__(expendedEnergy, tripTime, distance, name, addressInfo, distanceFromIntersection)
 
 class Destination(Stop):
-    def __init__(self, expendedEnergy, tripTime, distance, name, addressInfo, hasCharger, load=0):
+    def __init__(self, expendedEnergy, tripTime, distance, name, addressInfo, hasCharger, distanceFromIntersection, load=0):
         """ Represents the Destination of the route. 
 
             Keyword arguments:
@@ -60,13 +62,13 @@ class Destination(Stop):
             tripTime -- The duration of the trip from the previous stop to the current stop.
             distance -- The distance from the previous stop to the current stop
             name -- The name of the current stop (Address)
-            voltage -- The voltage of the charging station
-            current -- The current (in amps) that the charging station delivers. 
             addressInfo -- Address information about the location.
-            hasCharger -- Indicates whether or not the destination has a charging station or not.  
+            hasCharger -- Indicates whether or not the destination has a charging station or not. 
+            distanceFromIntersection -- The distance the location is from the route. 
+            load -- The power load delivered by the charger. 
         """
         self.Load = load
         self.HasCharger = hasCharger
-        super(Destination, self).__init__(expendedEnergy, tripTime, distance, name, addressInfo)
+        super(Destination, self).__init__(expendedEnergy, tripTime, distance, name, addressInfo, distanceFromIntersection)
 
 

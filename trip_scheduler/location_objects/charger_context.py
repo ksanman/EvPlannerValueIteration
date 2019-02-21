@@ -627,7 +627,7 @@ class ChargerContext:
             if isInCharger:
                 chargers[index].Connections.append(Connection(amps=charger['amps'], ID=charger['connectionid'], powerKw=charger['powerkw'], voltage=charger['voltage']))
             else:
-                chargers.append(Charger(addressInfo=AddressInfo(addressLine1=charger['addressline1'], addressLine2=charger['addressline2'], ID=charger['addressinfoid'], lat=charger['latitude'],long=charger['longitude'], title=charger['title']), connections=[Connection(amps=charger['amps'], ID=charger['connectionid'], powerKw=charger['powerkw'], voltage=charger['voltage'])], ID=charger['id'], usageCost=charger['usagecost']))
+                chargers.append(Charger(addressInfo=AddressInfo(addressLine1=charger['addressline1'], addressLine2=charger['addressline2'], ID=charger['addressinfoid'], lat=charger['latitude'],long=charger['longitude'], title=charger['title']), connections=[Connection(amps=charger['amps'], ID=charger['connectionid'], powerKw=charger['powerkw'], voltage=charger['voltage'])], ID=charger['id'], usageCost=charger['usagecost'], intersectionLatitude=charger['intersectionlatitude'], intersectionLongitude=charger['intersectionlongitude']))
 
         return chargers
 

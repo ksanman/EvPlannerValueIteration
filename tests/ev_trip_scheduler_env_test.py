@@ -4,7 +4,7 @@ from context import Start, Charger, Destination, LinearSimpleBattery, EvTripSche
 
 class EvTripScheduleEnvironmentTest(unittest.TestCase):
     def setUp(self):
-        route = [Start("Start", AddressInfo()), Charger(-1,1,1,"Charger",AddressInfo(), 10), Destination(-1,1, 1, "Destination", AddressInfo(),True,10)]
+        route = [Start("Start", AddressInfo()), Charger(-1,1,1,"Charger",AddressInfo(), 0, 10), Destination(-1,1, 1, "Destination", AddressInfo(),True,0, 10)]
         battery = LinearSimpleBattery(3)
         self.env = EvTripScheduleEnvironment(route, 3, battery, Rewards())
 
