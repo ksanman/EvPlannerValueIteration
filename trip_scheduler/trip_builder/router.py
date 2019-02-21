@@ -67,7 +67,7 @@ class Router:
         """
 
         print 'Getting route...'
-        urlRequest = self.RouteRequestString.format(start.Longitude, start.Latitude, end.Longitude, end.Latitude)
+        urlRequest = self.RouteRequestString.format(start.AddressInfo.Longitude, start.AddressInfo.Latitude, end.AddressInfo.Longitude, end.AddressInfo.Latitude)
         response = requests.get(urlRequest)
         content = response.content 
         jsonData = content.decode('utf8').replace("'", '"')
@@ -95,8 +95,6 @@ class Router:
         print 'Building Route'
         #get the intersections along the route
         intersections = self.GetIntersections(route)
-
-
         return {'route':polyline.decode(route['geometry']),'intersections':intersections}
 
     def GetIntersections(self, data):
@@ -120,7 +118,7 @@ class Router:
             route -- A list of lat/long pairs that resemble the route. 
             searchDistance -- The radius to search from the route for charging locations.
         """
-        raise Exception("Not Implemented")
+        return self.ChargerContext.GetNearestChargersFromDatabase(route, searchDistance)
 
 
     def GetNearestChargersFromFile(self, filePath):

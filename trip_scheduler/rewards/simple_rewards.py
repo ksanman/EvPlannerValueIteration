@@ -51,4 +51,5 @@ class SimpleRewards:
             purchasedPower -- The amount of energy purchesed. 
             chargingPrice -- Pre computed price of charging the battery to the currentBatteryCharge. 
         """
+        #TODO Base Cost + rate cost
         return -(purchasedPower * chargingPrice) if currentBatteryCharge < batteryCapacity * .80 else -100

@@ -4,8 +4,7 @@ class AddressInfo:
     AddressInfo describes a charger location.
     """
     def __init__(self, accessComments=None, addressLine1=None,addressLine2=None,contactEmail=None,contactTelephone1=None,contactTelephone2=None,
-                 countryID=None,distanceUnit=None,ID=None,lat=None,long=None,postcode=None,relatedUrl=None, state=None,title=None,town=None,
-                 distanceFromCurrentWaypoint=None, trip_distance=None):
+                 countryID=None,distanceUnit=None,ID=None,lat=None,long=None,postcode=None,relatedUrl=None, state=None,title=None,town=None):
             self.AccessComments = accessComments
             self.AddressLine1 = addressLine1
             self.AddressLine2 = addressLine2
@@ -22,5 +21,3 @@ class AddressInfo:
             self.StateOrProvince = state
             self.Title = title
             self.Town = town
-            self.DistanceFromCurrentWaypoint = distanceFromCurrentWaypoint
-            self.TripDistance = trip_distance

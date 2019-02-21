@@ -69,7 +69,12 @@ class ValueIterationAgent:
             if action_values == []:
                 continue
 
-            self.Policy[state] = np.argmax(action_values)
+            # greater than or equal
+            #self.Policy[state] = np.argmax(action_values)
+            if len(action_values) == 1:
+                self.Policy[state] = 0
+            else:
+                self.Policy[state] = 0 if action_values[0] > action_values[1] else 1
         
         if isShowable:
             self.PrintPolicy()
@@ -285,25 +290,25 @@ class ValueIterationAgent:
 
 
         # Horizantal Time
-        #plt.xlim(xmax=self.Environment.MaxTime, xmin=0)
-        #plt.ylim(ymin=0)
-        #axes.plot(time, milage)
-        # xTickSpacing = int(Decimal((self.Environment.MaxTime + 1)/10).quantize(Decimal('0'), rounding=ROUND_HALF_UP)) if self.Environment.MaxTime + 1 > 10 else 1
-        # plt.xticks(np.arange(0, self.Environment.MaxTime + 1, xTickSpacing))
-        # yTickSpacing = int(Decimal((max(milage) + 1)/10).quantize(Decimal('0'), rounding=ROUND_HALF_UP)) if max(milage) + 1 > 10 else 1
-        # plt.yticks(np.arange(0, max(milage) + 1, yTickSpacing))
-        #labels = axes.get_xticklabels()
-        #plt.setp(labels, horizontalalignment='right')
-        #axes.set(xlabel='Time', ylabel='Distance', title=routeName + ': Distance vs Time')
+        plt.xlim(xmax=self.Environment.MaxTime, xmin=0)
+        plt.ylim(ymin=0)
+        axes.plot(time, milage)
+        xTickSpacing = RoundHalfUpToInt((self.Environment.MaxTime + 1)/10) if self.Environment.MaxTime + 1 > 10 else 1
+        plt.xticks(np.arange(0, self.Environment.MaxTime + 1, xTickSpacing))
+        yTickSpacing = RoundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
+        plt.yticks(np.arange(0, max(milage) + 1, yTickSpacing))
+        labels = axes.get_xticklabels()
+        plt.setp(labels, horizontalalignment='right')
+        axes.set(xlabel='Time', ylabel='Distance', title=routeName + ': Distance vs Time')
 
         #Vertical Time
-        plt.ylim(ymax=self.Environment.MaxTime, ymin=0)
-        plt.xlim(xmin=0)
-        axes.plot(milage, time)
-        yTickSpacing = RoundHalfUpToInt(self.Environment.MaxTime) if self.Environment.MaxTime + 1 > 10 else 1
-        plt.yticks(np.arange(0, self.Environment.MaxTime + 1, yTickSpacing))
-        xTickSpacing = RoundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
-        plt.xticks(np.arange(0, max(milage) + 1, xTickSpacing))
+        # plt.ylim(ymax=self.Environment.MaxTime, ymin=0)
+        # plt.xlim(xmin=0)
+        # axes.plot(milage, time)
+        # yTickSpacing = RoundHalfUpToInt((self.Environment.MaxTime + 1)/10) if self.Environment.MaxTime + 1 > 10 else 1
+        # plt.yticks(np.arange(0, self.Environment.MaxTime + 1, yTickSpacing))
+        # xTickSpacing = RoundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
+        # plt.xticks(np.arange(0, max(milage) + 1, xTickSpacing))
 
         labels = axes.get_xticklabels()
 
@@ -336,7 +341,7 @@ class ValueIterationAgent:
 
         yTickSpacing = RoundHalfUpToInt((max(battery)) + 1/ 10) if max(battery) + 1 > 10 else 1
         plt.yticks(np.arange(0, max(battery) + 1, yTickSpacing))
-        xTickSpacing = RoundHalfUpToInt(self.Environment.MaxTime + 1) if self.Environment.MaxTime + 1 > 10 else 1
+        xTickSpacing = RoundHalfUpToInt((self.Environment.MaxTime + 1))/10 if self.Environment.MaxTime + 1 > 10 else 1
         plt.xticks(np.arange(0, self.Environment.MaxTime + 1, xTickSpacing))
 
         labels = batteryAxes.get_xticklabels()
