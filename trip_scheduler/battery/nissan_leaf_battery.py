@@ -2,7 +2,7 @@ from battery import Battery
 from ..utility import RoundHalfUpToInt, ConvertFromTimeBlockToHours
 
 class NissanLeafBattery(Battery):
-    kWhPkm = 0.212
+    kWhPkm = 4.5 #khw/km
     
     def __init__(self, capacity):
         """ Models the battery of a Nissan Leaf
@@ -20,7 +20,7 @@ class NissanLeafBattery(Battery):
         if type(time) != int:
             raise Exception("Time must be represented as an integer value!")
 
-        batteryConsumed = distance * self.kWhPkm
+        batteryConsumed = distance / self.kWhPkm
         return -batteryConsumed
 
     def Charge(self, time, load):

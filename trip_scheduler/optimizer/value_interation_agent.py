@@ -33,7 +33,7 @@ class ValueIterationAgent:
                 if action_reward_values == []:
                     continue
 
-                self.V[state] = np.argmax(action_reward_values)
+                self.V[state] = np.max(action_reward_values)
 
             delta = np.sum(np.fabs(v_copy - self.V))
             if(delta <= 0.1):
@@ -231,64 +231,65 @@ class ValueIterationAgent:
                     timeDistance.append([time, 0])
 
 
-        #self.PlotBatteryInfo(batteryInfo, routeName)
-        #self.PlotBatteryVsTime(batteryDistance, routeName)
-        #self.PlotTimeVsDistance(timeDistance, routeName)
-        self.PlotRewardsTable(routeName)
+        self.PlotBatteryInfo(batteryInfo, routeName)
+        self.PlotBatteryVsTime(batteryDistance, routeName)
+        self.PlotTimeVsDistance(timeDistance, routeName)
+        #self.PlotRewardsTable(routeName)
         #self.PlotVTable(routeName)
         #self.PlotPolicy(routeName)
 
     def PlotRewardsTable(self,routeName):
-        timeArray = np.arange(0, self.Environment.MaxTime, 1)
-        batteryArray = np.arange(0, self.Environment.MaxBattery, 1)
+        pass
+        # timeArray = np.arange(0, self.Environment.MaxTime, 1)
+        # batteryArray = np.arange(0, self.Environment.MaxBattery, 1)
 
-        xpos = np.arange(timeArray.shape[0])
-        ypos = np.arange(batteryArray.shape[0])
+        # xpos = np.arange(timeArray.shape[0])
+        # ypos = np.arange(batteryArray.shape[0])
 
-        xposM, yposM = np.meshgrid(xpos, ypos, copy=False)
+        # xposM, yposM = np.meshgrid(xpos, ypos, copy=False)
 
-        xpos, ypos = xpos.flatten(), ypos.flatten()
-        zpos = np.zeros(len(timeArray)*len(batteryArray))
+        # xpos, ypos = xpos.flatten(), ypos.flatten()
+        # zpos = np.zeros(len(timeArray)*len(batteryArray))
 
-        dx = 0.5
-        dy = 0.5
+        # dx = 0.5
+        # dy = 0.5
 
-        fig = plt.figure()
-        ax = Axes3D(fig)
+        # fig = plt.figure()
+        # ax = Axes3D(fig)
 
-        for stop in range(self.Environment.Stops):
-            drivingRewards = np.zeros((self.Environment.MaxTime, self.Environment.MaxBattery))
-            chargingRewards = np.zeros((self.Environment.MaxTime,self.Environment.MaxBattery))
-            for time in timeArray:
-                for battery in batteryArray:
-                    state = self.Environment.Encode(stop, time, battery)
-                    for action in range(len(self.Environment.GetActionSpaceForState(state))):
-                        if action == 0:
-                            drivingRewards[time][battery] = self.Environment.P[state][0][0][2]
-                        elif action == 1:
-                            chargingRewards[time][battery] = self.Environment.P[state][1][0][2]
+        # for stop in range(self.Environment.Stops):
+        #     drivingRewards = np.zeros((self.Environment.MaxTime, self.Environment.MaxBattery))
+        #     chargingRewards = np.zeros((self.Environment.MaxTime,self.Environment.MaxBattery))
+        #     for time in timeArray:
+        #         for battery in batteryArray:
+        #             state = self.Environment.Encode(stop, time, battery)
+        #             for action in range(len(self.Environment.GetActionSpaceForState(state))):
+        #                 if action == 0:
+        #                     drivingRewards[time][battery] = self.Environment.P[state][0][0][2]
+        #                 elif action == 1:
+        #                     chargingRewards[time][battery] = self.Environment.P[state][1][0][2]
 
-            zpos=drivingRewards
-            zpos = zpos.ravel()
-            zlabel = zpos
-            zpos = ((zpos - min(zpos))/(max(zpos) - min(zpos)))
+        #     zpos=drivingRewards
+        #     zpos = zpos.ravel()
+        #     zlabel = zpos
+        #     zpos = ((zpos - min(zpos))/(max(zpos) - min(zpos)))
 
-            dx=0.5
-            dy=0.5
-            dz=zpos
+        #     dx=0.5
+        #     dy=0.5
+        #     dz=zpos
 
-            ax.w_xaxis.set_ticks(xpos + dx/2.)
-            ax.w_xaxis.set_ticklabels(timeArray)
+        #     ax.w_xaxis.set_ticks(xpos + dx/2.)
+        #     ax.w_xaxis.set_ticklabels(timeArray)
 
-            ax.w_yaxis.set_ticks(ypos + dy/2.)
-            ax.w_yaxis.set_ticklabels(batteryArray)
+        #     ax.w_yaxis.set_ticks(ypos + dy/2.)
+        #     ax.w_yaxis.set_ticklabels(batteryArray)
 
-            ax.bar3d(xposM.ravel(), yposM.ravel(), zlabel, dx, dy, dz)
-            ax.set_xlabel('Time')
-            ax.set_ylabel('Battery')
-            ax.set_zlabel('Reward')
+        #     ax.bar3d(xposM.ravel(), yposM.ravel(), zlabel, dx, dy, dz)
+        #     ax.set_xlabel('Time')
+        #     ax.set_ylabel('Battery')
+        #     ax.set_zlabel('Reward')
 
-            plt.show()
+        #     plt.show()
 
                     # Driving Rewards graph
 
@@ -414,7 +415,7 @@ class ValueIterationAgent:
         plt.yticks(np.arange(0, max(milage) + 1, yTickSpacing))
         labels = axes.get_xticklabels()
         plt.setp(labels, horizontalalignment='right')
-        axes.set(xlabel='Time', ylabel='Distance', title=routeName + ': Distance vs Time')
+        axes.set(xlabel='Distance', ylabel='Time', title=routeName + ': Distance vs Time')
 
         #Vertical Time
         # plt.ylim(ymax=self.Environment.MaxTime, ymin=0)
