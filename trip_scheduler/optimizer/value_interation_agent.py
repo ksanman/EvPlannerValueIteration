@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
 import os
 from collections import OrderedDict
 from ..utility import RoundHalfUpToInt
@@ -231,6 +233,67 @@ class ValueIterationAgent:
         self.PlotBatteryInfo(batteryInfo, routeName)
         self.PlotBatteryVsTime(batteryDistance, routeName)
         self.PlotTimeVsDistance(timeDistance, routeName)
+        self.PlotRewardsTable(routeName)
+        self.PlotVTable(routeName)
+        self.PlotPolicy(routeName)
+
+    def PlotRewardsTable(self,routeName):
+        p = self.Environment.P
+        rewards = np.zeros((self.Environment.NumberOfStates, 2))
+        for s in range(self.Environment.NumberOfStates):
+            for a in range(len(self.Environment.GetActionSpaceForState(s))):
+                rewards[s][a] = p[s][a][0][2]
+        
+        dx = np.arange(0, self.Environment.Stops)
+        dy = np.arange(0, self.Environment.MaxTime)
+        dz = np.arange(0, self.Environment.MaxBattery)
+
+        cx = np.arange(0, self.Environment.Stops)
+        cy = np.arange(0, self.Environment.MaxTime)
+        cz = np.arange(0, self.Environment.MaxBattery)
+
+        dr = []
+        cr = []
+        for s in range(self.Environment.NumberOfStates):
+            for a in range(len(self.Environment.GetActionSpaceForState(s))):
+                if a == 0:
+                    dr = rewards[s][a]
+                elif a == 1:
+                    cr = rewards[s][a]
+        figure, ax = plt.subplots()
+
+        if routeName == "":
+            plt.show()
+        else:
+            if not os.path.exists("temp"):
+                os.mkdir('temp/')
+
+            figure.savefig('temp/' + routeName + '_RewardMatrix.png', dpi=figure.dpi)
+        
+
+    def PlotVTable(self,routeName):
+        figure, batteryAxes = plt.subplots()
+        
+
+        if routeName == "":
+            plt.show()
+        else:
+            if not os.path.exists("temp"):
+                os.mkdir('temp/')
+
+            figure.savefig('temp/' + routeName + '_VTable.png', dpi=figure.dpi)
+
+    def PlotPolicy(self,routeName):
+        figure, batteryAxes = plt.subplots()
+        plt.imshow(self.Policy, cmap='hot', interpolation='nearest')
+
+        if routeName == "":
+            plt.show()
+        else:
+            if not os.path.exists("temp"):
+                os.mkdir('temp/')
+
+            figure.savefig('temp/' + routeName + '_PolicyTable.png', dpi=figure.dpi)
 
     def PlotBatteryVsTime(self, batteryDistance, routeName):
         """ Plots the battery level as a funtion of battery level and distance. 

@@ -1,13 +1,13 @@
 from context import LinearSimpleBattery, RealisticSimpleBattery, NissanLeafBattery
 import unittest
 
-class TestBattery(unittest.TestCase):
+class Test_Battery(unittest.TestCase):
     def setUp(self):
         self.LinearBattery = LinearSimpleBattery(10)
         self.RealisticBattery = RealisticSimpleBattery(10)
         self.NissanLeafBattery = NissanLeafBattery(30)
 
-    def testSimpleDischarge(self):
+    def test_SimpleDischarge(self):
         time = 1
         actualCharge = -1
         testCharge = self.LinearBattery.Discharge(time, 0)
@@ -18,7 +18,7 @@ class TestBattery(unittest.TestCase):
         testCharge = self.LinearBattery.Discharge(time, 0)
         self.assertEqual(testCharge, actualCharge)
 
-    def testSimpleCharge(self):
+    def test_SimpleCharge(self):
         time = 1
         chargerCurrent = 100
         chargerVoltage = 400
@@ -27,7 +27,7 @@ class TestBattery(unittest.TestCase):
         testCharge = self.LinearBattery.Charge(time, load)
         self.assertEqual(actualCharge, testCharge)
 
-    def testRealisticSimpleDischarge(self):
+    def test_RealisticSimpleDischarge(self):
         time = 1
         actualCharge = -1
         testCharge = self.RealisticBattery.Discharge(time, 0)
@@ -38,7 +38,7 @@ class TestBattery(unittest.TestCase):
         testCharge = self.RealisticBattery.Discharge(time, 0)
         self.assertEqual(testCharge, actualCharge)
 
-    def testRealisticSimpleCharge(self):
+    def test_RealisticSimpleCharge(self):
         time = 1
         chargerCurrent = 100
         chargerVoltage = 400
@@ -47,7 +47,7 @@ class TestBattery(unittest.TestCase):
         testCharge = self.RealisticBattery.Charge(time, load)
         self.assertEqual(actualCharge, testCharge)
 
-    def testNissanLeafCharge(self):
+    def test_NissanLeafCharge(self):
         time = 1
         chargerCurrent = 100
         chargerVoltage = 400
@@ -56,7 +56,7 @@ class TestBattery(unittest.TestCase):
         testCharge = self.NissanLeafBattery.Charge(time, load)
         self.assertEqual(actualCharge, testCharge)
 
-    def testNissanLeafDischarge(self):
+    def test_NissanLeafDischarge(self):
         time = 2
         distance = 30
         actualCharge = -6.359999999999999

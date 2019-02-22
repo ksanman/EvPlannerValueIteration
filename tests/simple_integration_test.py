@@ -57,12 +57,12 @@ class Test_EvScheduleIntegration(unittest.TestCase):
         expected = {'Success': {'Battery': 1, 'Trip Time': '60 Minutes (4 time steps)', 'Charging Stops': ['Stop at Charger2 for 15 minutes (1 time steps).']}}
         self.assertDictEqual(schedule[0], expected)
 
-    def test_GetChargersFromDatabase(self):
-        """ This test will only run if there is a database.
-        """
+    # def test_GetChargersFromDatabase(self):
+    #     """ This test will only run if there is a database.
+    #     """
         
-        route = self.RouteBuilder.BuildRoute("Database Test", Point(AddressInfo(lat=41.7370, long=-111.8338)), Point(AddressInfo(lat=37.0965, long=-113.5684)), 5)
-        self.assertTrue(route)
+    #     route = self.RouteBuilder.BuildRoute("Database Test", Point(AddressInfo(lat=41.7370, long=-111.8338)), Point(AddressInfo(lat=37.0965, long=-113.5684)), 5)
+    #     self.assertTrue(route)
 
     def test_LongSimpleTestWithChargerAtDestination(self):
         # Simple Test Case with Random Chargers and Charger at end

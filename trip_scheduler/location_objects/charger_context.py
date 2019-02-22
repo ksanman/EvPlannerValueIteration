@@ -147,7 +147,9 @@ class ChargerContext:
             obj["SubmissionStatusTypeID"] if 'SubmissionStatusTypeID' in obj else None,
             obj["UUID"] if 'UUID' in obj else None,
             obj["UsageCost"] if 'UsageCost' in obj else None,
-            obj["UsageTypeID"] if 'UsageTypeID' in obj else None
+            obj["UsageTypeID"] if 'UsageTypeID' in obj else None,
+            obj["IntersectionLatitude"] if "IntersectionLatitude" in obj else None,
+            obj["IntersectionLongitude"] if "IntersectionLongitude" in obj else None
             )
 
         return charger

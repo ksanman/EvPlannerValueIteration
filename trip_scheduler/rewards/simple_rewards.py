@@ -39,7 +39,7 @@ class SimpleRewards:
         """
         return 0 if currentBatteryCharge > batteryCapacity * .10 else -100
 
-    def ComputeBatteryRewardForCharging(self, currentBatteryCharge, batteryCapacity, purchasedPower, chargingPrice=0.13):
+    def ComputeBatteryRewardForCharging(self, currentBatteryCharge, batteryCapacity, purchasedPower, distanceFromRoute=0, chargingPrice=0.13):
         """ Computes the reward given the current battery charge after a charging action. 
             The reward is 0 if the battery charge is less than 80% the capacity. 
             The reward is negative if the battery charge is greater than 80% the capacity. 

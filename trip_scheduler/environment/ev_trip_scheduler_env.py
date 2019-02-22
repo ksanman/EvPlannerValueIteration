@@ -116,7 +116,7 @@ class EvTripScheduleEnvironment:
             # Set the time reward
             reward += self.ComputeReward((nextTime, self.ExpectedTime), self.RewardFunctions.ComputeTimeReward)
             # Set the charging reward. The reward is negative for staying too long at a charger and overcharging the car. 
-            reward += self.ComputeReward((nextBattery, self.MaxBattery - 1, nextBattery - battery), self.RewardFunctions.ComputeBatteryRewardForCharging)
+            reward += self.ComputeReward((nextBattery, self.MaxBattery - 1, nextBattery - battery, self.Route[stop].DistanceFromIntersection), self.RewardFunctions.ComputeBatteryRewardForCharging)
 
         # If there are no actions, return
         elif action == None:

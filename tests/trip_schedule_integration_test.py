@@ -9,7 +9,7 @@ def run():
     tripTime = RoundHalfUpToInt((8 * 60) / 15) # Hours to 15 minute time blocks
 
     t = time()
-    schedule = tripScheduler.ScheduleRouteFromFiles("St George Trip without Destination Charger", stGeorgeTrip, stGeorgeChargers, tripTime, battery, True)
+    schedule = tripScheduler.ScheduleRouteFromFiles("St George Trip with Destination Charger", stGeorgeTrip, stGeorgeChargers, tripTime, battery, True)
     t = time() - t
 
     print 'Schedule Done \n Completed in: {0} seconds'.format(t)

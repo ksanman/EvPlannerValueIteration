@@ -31,7 +31,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 1,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 41.644869,
+        "IntersectionLongitude": -111.914032
     },
     {
         "AddressInfo": {
@@ -65,7 +69,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 2,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 41.311471,
+        "IntersectionLongitude": -112.026131
     },
     {
         "AddressInfo" : {
@@ -99,7 +107,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 3,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 41.192178, 
+        "IntersectionLongitude": -112.004591
     },
     {
         "AddressInfo" : {
@@ -133,7 +145,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 4,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 40.765961, 
+        "IntersectionLongitude": -111.913383 
     },
     {
         "AddressInfo": {
@@ -167,7 +183,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 5,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 40.725206, 
+        "IntersectionLongitude": -111.904668
     },
     {
         "AddressInfo": {
@@ -201,7 +221,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 6,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 40.679581, 
+        "IntersectionLongitude": -111.902250
     },
     {
         "AddressInfo": {
@@ -235,7 +259,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 7,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 40.549634, 
+        "IntersectionLongitude": -111.896259
     },
     {
         "AddressInfo": {
@@ -269,7 +297,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 8,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 40.487236, 
+        "IntersectionLongitude": -111.895792 
     },
     {
         "AddressInfo": {
@@ -303,7 +335,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 9,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 40.284919, 
+        "IntersectionLongitude": -111.725683
     },
     {
         "AddressInfo": {
@@ -337,7 +373,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 10,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 39.978869, 
+        "IntersectionLongitude": -111.769527
     },
     {
         "AddressInfo": {
@@ -371,7 +411,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 11,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 39.687900, 
+        "IntersectionLongitude": -111.831491
     },
     {
         "AddressInfo": {
@@ -405,7 +449,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 12,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 38.953255,  
+        "IntersectionLongitude": -112.348173
     },
     {
         "AddressInfo": {
@@ -439,7 +487,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 13,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 38.253059, 
+        "IntersectionLongitude": -112.650294
     },
     {
         "AddressInfo": {
@@ -473,7 +525,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 14,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 37.731824, 
+        "IntersectionLongitude": -113.049436
     },
     {
         "AddressInfo": {
@@ -507,7 +563,11 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ],
+        "ID": 15,
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 37.150356,
+        "IntersectionLongitude": -113.483609
     },
     {
         "AddressInfo":{
@@ -541,6 +601,10 @@
                 "Quantity": 1,
                 "Voltage": 400
             }
-        ]
+        ], 
+        "ID": 16, 
+        "UsuageCost": "0.00",
+        "IntersectionLatitude": 37.112851, 
+        "IntersectionLongitude": -113.556478
     }
 ]
