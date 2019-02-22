@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import os
 from collections import OrderedDict
 from ..utility import RoundHalfUpToInt
@@ -230,49 +231,100 @@ class ValueIterationAgent:
                     timeDistance.append([time, 0])
 
 
-        self.PlotBatteryInfo(batteryInfo, routeName)
-        self.PlotBatteryVsTime(batteryDistance, routeName)
-        self.PlotTimeVsDistance(timeDistance, routeName)
+        #self.PlotBatteryInfo(batteryInfo, routeName)
+        #self.PlotBatteryVsTime(batteryDistance, routeName)
+        #self.PlotTimeVsDistance(timeDistance, routeName)
         self.PlotRewardsTable(routeName)
-        self.PlotVTable(routeName)
-        self.PlotPolicy(routeName)
+        #self.PlotVTable(routeName)
+        #self.PlotPolicy(routeName)
 
     def PlotRewardsTable(self,routeName):
-        p = self.Environment.P
-        rewards = np.zeros((self.Environment.NumberOfStates, 2))
-        for s in range(self.Environment.NumberOfStates):
-            for a in range(len(self.Environment.GetActionSpaceForState(s))):
-                rewards[s][a] = p[s][a][0][2]
-        
-        dx = np.arange(0, self.Environment.Stops)
-        dy = np.arange(0, self.Environment.MaxTime)
-        dz = np.arange(0, self.Environment.MaxBattery)
+        timeArray = np.arange(0, self.Environment.MaxTime, 1)
+        batteryArray = np.arange(0, self.Environment.MaxBattery, 1)
 
-        cx = np.arange(0, self.Environment.Stops)
-        cy = np.arange(0, self.Environment.MaxTime)
-        cz = np.arange(0, self.Environment.MaxBattery)
+        xpos = np.arange(timeArray.shape[0])
+        ypos = np.arange(batteryArray.shape[0])
 
-        dr = []
-        cr = []
-        for s in range(self.Environment.NumberOfStates):
-            for a in range(len(self.Environment.GetActionSpaceForState(s))):
-                if a == 0:
-                    dr = rewards[s][a]
-                elif a == 1:
-                    cr = rewards[s][a]
-        figure, ax = plt.subplots()
+        xposM, yposM = np.meshgrid(xpos, ypos, copy=False)
 
-        if routeName == "":
+        xpos, ypos = xpos.flatten(), ypos.flatten()
+        zpos = np.zeros(len(timeArray)*len(batteryArray))
+
+        dx = 0.5
+        dy = 0.5
+
+        fig = plt.figure()
+        ax = Axes3D(fig)
+
+        for stop in range(self.Environment.Stops):
+            drivingRewards = np.zeros((self.Environment.MaxTime, self.Environment.MaxBattery))
+            chargingRewards = np.zeros((self.Environment.MaxTime,self.Environment.MaxBattery))
+            for time in timeArray:
+                for battery in batteryArray:
+                    state = self.Environment.Encode(stop, time, battery)
+                    for action in range(len(self.Environment.GetActionSpaceForState(state))):
+                        if action == 0:
+                            drivingRewards[time][battery] = self.Environment.P[state][0][0][2]
+                        elif action == 1:
+                            chargingRewards[time][battery] = self.Environment.P[state][1][0][2]
+
+            zpos=drivingRewards
+            zpos = zpos.ravel()
+            zlabel = zpos
+            zpos = ((zpos - min(zpos))/(max(zpos) - min(zpos)))
+
+            dx=0.5
+            dy=0.5
+            dz=zpos
+
+            ax.w_xaxis.set_ticks(xpos + dx/2.)
+            ax.w_xaxis.set_ticklabels(timeArray)
+
+            ax.w_yaxis.set_ticks(ypos + dy/2.)
+            ax.w_yaxis.set_ticklabels(batteryArray)
+
+            ax.bar3d(xposM.ravel(), yposM.ravel(), zlabel, dx, dy, dz)
+            ax.set_xlabel('Time')
+            ax.set_ylabel('Battery')
+            ax.set_zlabel('Reward')
+
             plt.show()
-        else:
-            if not os.path.exists("temp"):
-                os.mkdir('temp/')
 
-            figure.savefig('temp/' + routeName + '_RewardMatrix.png', dpi=figure.dpi)
+                    # Driving Rewards graph
+
+        # for s in range(self.Environment.NumberOfStates):
+        #     for a in range(len(self.Environment.GetActionSpaceForState(s))):
+        #         rewards[s][a] = p[s][a][0][2]
+        
+        # dx = np.arange(0, self.Environment.Stops)
+        # dy = np.arange(0, self.Environment.MaxTime)
+        # dz = np.arange(0, self.Environment.MaxBattery)
+
+        # cx = np.arange(0, self.Environment.Stops)
+        # cy = np.arange(0, self.Environment.MaxTime)
+        # cz = np.arange(0, self.Environment.MaxBattery)
+
+        # dr = []
+        # cr = []
+        # for s in range(self.Environment.NumberOfStates):
+        #     for a in range(len(self.Environment.GetActionSpaceForState(s))):
+        #         if a == 0:
+        #             dr = rewards[s][a]
+        #         elif a == 1:
+        #             cr = rewards[s][a]
+        # figure, ax = plt.subplots()
+
+        # if routeName == "":
+        #     plt.show()
+        # else:
+        #     if not os.path.exists("temp"):
+        #         os.mkdir('temp/')
+
+        #     figure.savefig('temp/' + routeName + '_RewardMatrix.png', dpi=figure.dpi)
         
 
     def PlotVTable(self,routeName):
-        figure, batteryAxes = plt.subplots()
+        figure, _ = plt.subplots()
         
 
         if routeName == "":
@@ -284,7 +336,7 @@ class ValueIterationAgent:
             figure.savefig('temp/' + routeName + '_VTable.png', dpi=figure.dpi)
 
     def PlotPolicy(self,routeName):
-        figure, batteryAxes = plt.subplots()
+        figure, _ = plt.subplots()
         plt.imshow(self.Policy, cmap='hot', interpolation='nearest')
 
         if routeName == "":
