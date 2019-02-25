@@ -22,11 +22,11 @@ class Optimizer:
         """
         schedules = []
         for trip in routes:
-            schedules.append(self.OptimizeRoute(trip.Name, trip.Route, trip.Battery, trip.TripTime, isPrintStats))
+            schedules.append(self.OptimizeRoute(trip, isPrintStats))
 
         return schedules
 
-    def OptimizeRoute(self, routeName, route, battery, expectedTimeToDestination, isPrintStats):
+    def OptimizeRoute(self, trip, isPrintStats):
         """
             Given a route, a car battery, and an expected arrival time, find the optimal charging location schedule and return it. 
 
@@ -38,8 +38,7 @@ class Optimizer:
             expectedTimeToDestination -- The expected time to reach the destination. 
             isPrintStats -- Boolean value that triggers printing the optimizer output to the console. 
         """
-
-        environment = EvTripScheduleEnvironment(route, expectedTimeToDestination, battery, self.Rewards)
+        environment = EvTripScheduleEnvironment(trip.Route, trip.TripTime, trip.Battery, self.Rewards)
 
         # Build the value table
         agent = ValueIterationAgent(environment)
@@ -50,6 +49,6 @@ class Optimizer:
         agent.EvaluatePolicy(1, False, isPrintStats)
 
         # Display Graphs
-        agent.DisplayEvaluationGraphs(routeName)
+        agent.DisplayEvaluationGraphs(trip.Name)
 
-        return agent.GetSchedule()
+        return agent.GetSchedule(trip.Polyline)

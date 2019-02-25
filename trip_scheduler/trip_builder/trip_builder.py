@@ -8,7 +8,7 @@ class TripBuilder:
     def __init__(self):
         self.Router = Router()
 
-    def BuildTestTrip(self, name, route, expectedTripTime, carBattery):
+    def BuildTestTrip(self, name, route, polyline, expectedTripTime, carBattery):
         # Compute distances, time to travel, energy expended, etc. 
         stops = route[1:-1]
         startPoint = route[0]
@@ -21,13 +21,13 @@ class TripBuilder:
 
         tripRoute.append(self.GetTestDestination(endPoint, route[-2], carBattery))
 
-        # Package the trip object. 
-        trip = Trip(name, tripRoute, expectedTripTime, carBattery)
+        # Package the trip object.  
+        trip = Trip(name, tripRoute, polyline, expectedTripTime, carBattery)
 
         # Return the trip object. 
         return trip
 
-    def BuildTrip(self, name, route, expectedTripTime, carBattery):
+    def BuildTrip(self, name, route, polyline, expectedTripTime, carBattery):
         # Compute distances, time to travel, energy expended, etc. 
         stops = route[1:-1]
         startPoint = route[0]
@@ -41,7 +41,7 @@ class TripBuilder:
         tripRoute.append(self.GetDestination(endPoint, route[-2], carBattery))
 
         # Package the trip object. 
-        trip = Trip(name, tripRoute, expectedTripTime, carBattery)
+        trip = Trip(name, tripRoute, polyline, expectedTripTime, carBattery)
 
         # Return the trip object. 
         return trip

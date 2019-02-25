@@ -1,4 +1,4 @@
-from context import TripScheduler, NissanLeafBattery, RoundHalfUpToInt, Rewards
+from context import TripScheduler, NissanLeafBattery, RoundHalfUpToInt, Rewards, Map
 from time import time
 
 def run():
@@ -9,11 +9,14 @@ def run():
     tripTime = RoundHalfUpToInt((8 * 60) / 15) # Hours to 15 minute time blocks
 
     t = time()
-    schedule = tripScheduler.ScheduleRouteFromFiles("St George Trip with Destination Charger", stGeorgeTrip, stGeorgeChargers, tripTime, battery, True)
+    schedule = tripScheduler.ScheduleRouteFromFiles("St George Trip with Destination Charger", stGeorgeTrip, stGeorgeChargers, tripTime, battery, True)[0]
     t = time() - t
 
     print 'Schedule Done \n Completed in: {0} seconds'.format(t)
-    print schedule
+    print schedule.Directions
+
+    map = Map()
+    map.DrawRoute(schedule.Route, schedule.Chargers)
 
 if __name__ == '__main__':
     run()

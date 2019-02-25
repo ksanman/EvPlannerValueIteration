@@ -55,7 +55,7 @@ class TripScheduler:
             route.extend(chargers)
             
         
-        trip = self.TripBuilder.BuildTrip(name, route, expectedTripTime, carBattery)
+        trip = self.TripBuilder.BuildTrip(name, route, routeCoordinates, expectedTripTime, carBattery)
         
         return self.Optimizer.OptimizeRoutes([trip])
 

@@ -7,6 +7,7 @@ import os
 from collections import OrderedDict
 from ..utility import RoundHalfUpToInt
 from ..environment.ev_trip_scheduler_env import EvTripScheduleEnvironment
+from schedule import Schedule
 
 
 class ValueIterationAgent:
@@ -190,19 +191,20 @@ class ValueIterationAgent:
         """
         stop, time, battery = self.Environment.Decode(state)
         if stop != self.Environment.Stops - 1:
-            self.Schedule = {"Failed": "Trip Failed at stop {0} after {1} minutes ({2} time steps).".format(stop, time*15, time)}
+            self.Directions = {"Failed": "Trip Failed at stop {0} after {1} minutes ({2} time steps).".format(stop, time*15, time)}
         else:
-            self.Schedule = {"Success": {"Trip Time": '{0} Minutes ({1} time steps)'.format(time*15, time), "Battery": battery, "Charging Stops": []}}
+            self.Directions = {"Success": {"Trip Time": '{0} Minutes ({1} time steps)'.format(time*15, time), "Battery": battery, "Charging Stops": []}}
             for w, t in self.ChargingPoints.items():
                 s = 'Stop at {0} for {1} minutes ({2} time steps).'.format(self.Environment.Route[w].Name, t*15, t)
-                self.Schedule["Success"]["Charging Stops"].append(s)
+                self.Directions["Success"]["Charging Stops"].append(s)
 
-    def GetSchedule(self):
+    def GetSchedule(self, polyline):
         """ Return a computed schedule to the user. 
         """
-        if self.Schedule is None:
+        if self.Directions is None:
              raise Exception("No Schedule Found!")
-        return self.Schedule 
+        chargers = [self.Environment.Route[c] for c, _ in self.ChargingPoints.items()]
+        return Schedule(self.Directions,  polyline, chargers)
 
     def DisplayEvaluationGraphs(self, routeName = ""):
         """ Display diagnostic graphs to see if the algorithm is working as expected. 
@@ -416,15 +418,6 @@ class ValueIterationAgent:
         labels = axes.get_xticklabels()
         plt.setp(labels, horizontalalignment='right')
         axes.set(xlabel='Distance', ylabel='Time', title=routeName + ': Distance vs Time')
-
-        #Vertical Time
-        # plt.ylim(ymax=self.Environment.MaxTime, ymin=0)
-        # plt.xlim(xmin=0)
-        # axes.plot(milage, time)
-        # yTickSpacing = RoundHalfUpToInt((self.Environment.MaxTime + 1)/10) if self.Environment.MaxTime + 1 > 10 else 1
-        # plt.yticks(np.arange(0, self.Environment.MaxTime + 1, yTickSpacing))
-        # xTickSpacing = RoundHalfUpToInt((max(milage) + 1)/10) if max(milage) + 1 > 10 else 1
-        # plt.xticks(np.arange(0, max(milage) + 1, xTickSpacing))
 
         labels = axes.get_xticklabels()
 
