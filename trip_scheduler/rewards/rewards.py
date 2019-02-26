@@ -53,5 +53,5 @@ class Rewards:
             purchasedPower -- The amount of energy purchesed. 
             chargingPrice -- Pre computed price of charging the battery to the currentBatteryCharge. 
         """
-        return -((3 * distanceFromRoute) + (purchasedPower * chargingPrice)) if currentBatteryCharge < batteryCapacity * .90 else -100
+        return -((3 * distanceFromRoute) + 5 + (purchasedPower * chargingPrice)) if currentBatteryCharge < batteryCapacity * .90 else -100
         #return ((batteryCapacity * .80) - currentBatteryCharge) * 3 if currentBatteryCharge > batteryCapacity * .80 else -(purchasedPower * chargingPrice) 

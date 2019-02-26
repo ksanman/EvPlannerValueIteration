@@ -26,7 +26,7 @@ class ValueIterationAgent:
             v_copy = self.V.copy()
             iteration += 1
 
-            for state in range(self.Environment.NumberOfStates):
+            for state in range(self.Environment.NumberOfStates-1, -1, -1):
                 action_reward_values = []
                 for action in self.Environment.GetActionSpaceForState(state):
                     action_reward_values.append(self.Environment.P[state][action][0][2] + self.Discount * self.V[self.Environment.P[state][action][0][1]])

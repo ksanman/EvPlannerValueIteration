@@ -5,7 +5,7 @@ def run():
     tripScheduler = TripScheduler(Rewards())
     stGeorgeTrip = 'data/stgeorge_route.txt'
     stGeorgeChargers = 'data/stgeorge_chargers.txt'
-    battery = NissanLeafBattery(40)
+    battery = NissanLeafBattery(30)
     tripTime = RoundHalfUpToInt((8 * 60) / 15) # Hours to 15 minute time blocks
 
     t = time()

@@ -49,6 +49,7 @@ class EvTripScheduleEnvironment:
         # It contains the probability of event happeneing, s', the reward, and if s' is terminal. 
         # There are at most 2 actions for each state. 
         self.P = {state: {action: [] for action in range(2)} for state in range(self.NumberOfStates)}
+        self.TransitionTable = {stop: {time: {battery: { action: [] for action in range(2)} for battery in range(self.MaxBattery)} for time in range(self.MaxTime)} for stop in range(self.Stops)}
         self.RewardFunctions = rewardFunctions
         self.InitializeEnvironment()
     
@@ -130,6 +131,7 @@ class EvTripScheduleEnvironment:
 
         newState = int(self.Encode(nextStop, nextTime, nextBattery))
         self.P[state][action].append((1.0, newState, reward, done))
+        self.TransitionTable[stop][time][battery][action].append((1.0, (nextStop, nextTime, nextBattery), reward, done))
 
     def InitializeActionSpace(self):
         """ Initializes the action space for every state in the schedule model. 
@@ -154,8 +156,12 @@ class EvTripScheduleEnvironment:
     def GetActionSpaceForState(self, state):
         """ Get the available actions for the selected state. 
         """
-        stop, time, battery = self.Decode(state)
-        return self.ActionSpace[stop][time][battery]      
+        return self.GetActionSpaceForStopTimeAndBattery(*self.Decode(state))
+
+    def GetActionSpaceForStopTimeAndBattery(self, stop, time, battery):
+        """ Get the available actions for the current stop, time, and battery level. 
+        """
+        return self.ActionSpace[stop][time][battery] 
 
     def Encode(self, stop, time, battery):
         """ Encodes a given state into a single index for the master state list. 
