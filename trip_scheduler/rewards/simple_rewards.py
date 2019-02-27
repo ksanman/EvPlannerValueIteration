@@ -25,7 +25,7 @@ class SimpleRewards:
             currentBatteryCharge -- The current charge level in the battery. 
             batteryCapacity -- The capacity of the battery in KWH. 
         """
-        return 0 if currentBatteryCharge > batteryCapacity * .20 else -100
+        return 0 if currentBatteryCharge > batteryCapacity * .20 else -1
 
     def ComputeBatteryRewardForDriving(self, currentBatteryCharge, batteryCapacity):
         """ Computes the reward given the current battery charge after a driving action. 
@@ -37,7 +37,7 @@ class SimpleRewards:
             currentBatteryCharge -- The current charge level in the battery. 
             batteryCapacity -- The capacity of the battery in KWH. 
         """
-        return 0 if currentBatteryCharge > batteryCapacity * .10 else -100
+        return 0 if currentBatteryCharge > batteryCapacity * .20 else -1
 
     def ComputeBatteryRewardForCharging(self, currentBatteryCharge, batteryCapacity, purchasedPower, distanceFromRoute=0, chargingPrice=0.13):
         """ Computes the reward given the current battery charge after a charging action. 
@@ -52,4 +52,4 @@ class SimpleRewards:
             chargingPrice -- Pre computed price of charging the battery to the currentBatteryCharge. 
         """
         #TODO Base Cost + rate cost
-        return -(purchasedPower * chargingPrice) if currentBatteryCharge < batteryCapacity * .80 else -100
+        return -(purchasedPower * chargingPrice) if currentBatteryCharge < batteryCapacity * .90 else -1

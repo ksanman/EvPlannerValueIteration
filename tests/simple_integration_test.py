@@ -43,7 +43,7 @@ class Test_EvScheduleIntegration(unittest.TestCase):
 
     def test_SimpleTestWithChargerAtDestination(self):
         # Simple Test Case with Charger at end
-        trip = self.BuildSimpleTestCase("Test Case 1", 3, 1, LinearSimpleBattery(3), True)
+        trip = self.BuildSimpleTestCase("Test Case 1", 2, 1, LinearSimpleBattery(3), True)
         schedule = self.Optimizer.OptimizeRoutes([trip], False)[0]
         print schedule.Directions
         expected = {'Success': {'Battery': 0, 'Trip Time': '45 Minutes (3 time steps)', 'Charging Stops': []}}
